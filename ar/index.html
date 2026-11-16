@@ -1,0 +1,1823 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFFDF4">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="유니 AR 3.0">
+<meta name="description" content="유니의 AR 3점대 15주 영어 리딩 프로그램 — 라즈키즈·실물책·매일 문제">
+<title>📚 유니의 AR 3.0 프로젝트</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='50' font-size='54'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E">
+<style>
+/* ========== 기본 ========== */
+*,*::before,*::after{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+html{-webkit-text-size-adjust:100%;}
+:root{
+  --cream:#FFFDF4; --cream2:#FFF8E1;
+  --ink:#4A3F35; --ink2:#6E6155; --ink3:#9A8B79;
+  --line:#F2E6CB; --line2:#F8EFDB;
+  --pink:#F28FA8; --pink-d:#D9788F; --pink-s:#FFE6EC;
+  --mint:#8FD3B3; --mint-d:#4E9B79; --mint-s:#E9F8F0;
+  --blue:#8FC3EC; --blue-d:#3F739F; --blue-s:#EAF4FD;
+  --purple:#BFA6E0; --purple-d:#7757A8; --purple-s:#F3EDFC;
+  --gold:#B98A3E; --gold-s:#FFF5DF;
+  --shadow:0 8px 20px rgba(183,152,108,.13);
+  --shadow2:0 3px 10px rgba(183,152,108,.10);
+  --r-lg:24px; --r-md:18px; --r-sm:14px;
+  --nav-h:66px;
+}
+body{
+  background:radial-gradient(120% 70% at 50% -10%,#FFF6D9 0%,rgba(255,246,217,0) 60%),#F4EDE0;
+  color:var(--ink);
+  font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+  font-size:15px;line-height:1.55;
+  word-break:keep-all;overflow-wrap:break-word;
+  -webkit-font-smoothing:antialiased;
+}
+button,input,select,textarea{font-family:inherit;}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent;}
+h1,h2,h3,h4,p{margin:0;}
+ul,ol{margin:0;padding:0;list-style:none;}
+.wrap{
+  position:relative;width:100%;max-width:520px;margin:0 auto;
+  min-height:100vh;min-height:100dvh;
+  padding-bottom:calc(var(--nav-h) + 34px);
+  background:linear-gradient(180deg,#FFFDF4 0%,#FFFAE9 40%,#FFF7E4 100%);
+  box-shadow:0 0 46px rgba(160,128,84,.14);
+}
+/* ========== 상단 ========== */
+.topbar{
+  position:sticky;top:0;z-index:30;
+  display:flex;align-items:center;gap:9px;
+  padding:12px 16px 10px;
+  background:linear-gradient(180deg,rgba(255,253,244,.99) 0%,rgba(255,253,244,.94) 70%,rgba(255,253,244,0) 100%);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+}
+.brand{display:flex;align-items:center;gap:7px;flex:1;min-width:0;}
+.brand-mark{font-size:19px;line-height:1;}
+.brand-title{
+  font-size:19px;font-weight:900;letter-spacing:-.6px;white-space:nowrap;
+  background:linear-gradient(96deg,#E97F9C 0%,#F2A0AF 46%,#EFA96B 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.brand-sub{font-size:10.5px;color:var(--ink3);font-weight:700;letter-spacing:-.2px;margin-top:-2px;}
+.streak-chip{
+  display:flex;align-items:center;gap:4px;
+  background:linear-gradient(180deg,#FFF3D2,#FFE8B4);
+  border:1.5px solid #F2D79A;border-radius:999px;
+  padding:5px 10px;font-size:12px;font-weight:800;color:#9A6B16;
+  white-space:nowrap;box-shadow:var(--shadow2);
+}
+/* ========== 공통 ========== */
+.view{display:none;padding:2px 16px 8px;}
+.view.active{display:block;animation:fade .22s ease;}
+@keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+.card{
+  background:#fff;border:1.5px solid var(--line);border-radius:var(--r-lg);
+  padding:16px;box-shadow:var(--shadow);margin-bottom:14px;
+}
+.card.tint{background:linear-gradient(180deg,#FFFDF6,#FFF8E8);}
+.sec-title{display:flex;align-items:center;gap:7px;font-size:16.5px;font-weight:900;letter-spacing:-.4px;margin:0 0 9px;}
+.sec-title .em{font-size:17px;}
+.lead{font-size:13.5px;color:var(--ink2);line-height:1.62;}
+.small{font-size:12px;color:var(--ink3);line-height:1.55;}
+.hr{height:1px;background:var(--line2);margin:13px 0;border:0;}
+.tag{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:11px;font-weight:800;padding:3px 8px;border-radius:999px;
+  background:var(--cream2);color:var(--ink2);border:1px solid var(--line);
+}
+/* ========== 홈 히어로 ========== */
+.hero{
+  position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#FFF0F4 0%,#FFF6E3 52%,#EAF7F1 100%);
+  border:1.5px solid #FCE3D8;border-radius:26px;padding:18px 16px 16px;
+  box-shadow:var(--shadow);margin-bottom:14px;
+}
+.hero::after{
+  content:"";position:absolute;right:-26px;top:-30px;width:120px;height:120px;
+  border-radius:50%;background:radial-gradient(circle,#FFE3EC 0%,rgba(255,227,236,0) 70%);
+}
+.hero-eyebrow{font-size:11.5px;font-weight:800;color:var(--pink-d);letter-spacing:.2px;}
+.hero h1{font-size:22px;font-weight:900;letter-spacing:-.9px;margin:5px 0 6px;line-height:1.32;}
+.hero h1 .num{color:var(--pink-d);}
+.hero p{font-size:13px;color:var(--ink2);position:relative;z-index:1;}
+.hero-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;position:relative;z-index:1;}
+.mini{
+  display:inline-flex;align-items:center;gap:4px;
+  background:rgba(255,255,255,.86);border:1.2px solid #F6E6D2;
+  border-radius:11px;padding:5px 9px;font-size:11.5px;font-weight:800;color:var(--ink2);
+}
+/* ========== 진행률 ========== */
+.prog-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:8px;}
+.prog-label{font-size:12.5px;font-weight:800;color:var(--ink2);}
+.prog-pct{font-size:20px;font-weight:900;letter-spacing:-.6px;color:var(--mint-d);}
+.track{height:13px;border-radius:999px;background:#F4EBD8;overflow:hidden;box-shadow:inset 0 1px 2px rgba(160,128,84,.13);}
+.bar{height:100%;border-radius:999px;width:0;transition:width .5s cubic-bezier(.22,1,.36,1);
+  background:linear-gradient(90deg,#8FD3B3,#7CC7E8 55%,#F2A0AF);}
+.stage-dots{display:flex;gap:5px;margin-top:10px;}
+.dot{flex:1;text-align:center;font-size:10.5px;font-weight:800;color:var(--ink3);
+  background:#FBF4E4;border:1.2px solid var(--line);border-radius:9px;padding:4px 2px;}
+.dot.on{background:linear-gradient(180deg,#E9F8F0,#DCF3E8);border-color:#B7E2CC;color:var(--mint-d);}
+.dot.now{background:linear-gradient(180deg,#FFEFF3,#FFE3EB);border-color:#F8C6D4;color:var(--pink-d);}
+/* ========== 홈 퀵 ========== */
+.quick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.qbtn{
+  border:1.5px solid var(--line);background:#fff;border-radius:var(--r-md);
+  padding:13px 12px;text-align:left;box-shadow:var(--shadow2);
+  transition:transform .14s ease,box-shadow .14s ease;
+}
+.qbtn:active{transform:scale(.975);}
+.qbtn .qem{font-size:21px;display:block;margin-bottom:4px;}
+.qbtn .qt{font-size:13.5px;font-weight:900;letter-spacing:-.3px;display:block;}
+.qbtn .qs{font-size:10.5px;color:var(--ink3);font-weight:700;display:block;margin-top:1px;}
+/* ========== 스테이지 카드 ========== */
+.stage{
+  border-radius:var(--r-lg);border:1.5px solid var(--line);background:#fff;
+  box-shadow:var(--shadow);margin-bottom:12px;overflow:hidden;
+}
+.stage-head{display:flex;align-items:center;gap:10px;padding:13px 14px;}
+.stage-badge{
+  width:38px;height:38px;border-radius:13px;flex:0 0 38px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;font-weight:900;color:#fff;letter-spacing:-.4px;
+}
+.s1 .stage-badge{background:linear-gradient(140deg,#8FD3B3,#5FBE93);}
+.s2 .stage-badge{background:linear-gradient(140deg,#8FC3EC,#609ED6);}
+.s3 .stage-badge{background:linear-gradient(140deg,#F2A9BC,#E4819B);}
+.s4 .stage-badge{background:linear-gradient(140deg,#BFA6E0,#9B7BCB);}
+.stage-meta{flex:1;min-width:0;}
+.stage-meta h3{font-size:14.5px;font-weight:900;letter-spacing:-.4px;}
+.stage-meta p{font-size:11px;color:var(--ink3);font-weight:700;margin-top:1px;}
+.stage-lv{font-size:11px;font-weight:900;padding:4px 8px;border-radius:8px;white-space:nowrap;}
+.s1 .stage-lv{background:var(--mint-s);color:var(--mint-d);}
+.s2 .stage-lv{background:var(--blue-s);color:var(--blue-d);}
+.s3 .stage-lv{background:var(--pink-s);color:var(--pink-d);}
+.s4 .stage-lv{background:var(--purple-s);color:var(--purple-d);}
+.stage-body{padding:0 14px 14px;border-top:1px dashed var(--line);}
+.stage-body .goal{font-size:12.5px;color:var(--ink2);line-height:1.6;padding-top:11px;}
+.kv{display:flex;gap:8px;margin-top:9px;font-size:12px;}
+.kv .k{color:var(--ink3);font-weight:800;flex:0 0 62px;}
+.kv .v{color:var(--ink);font-weight:700;flex:1;}
+/* ========== 표 ========== */
+.tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -2px;}
+table{border-collapse:collapse;width:100%;font-size:12px;min-width:100%;}
+th,td{padding:7px 6px;border-bottom:1px solid var(--line2);text-align:left;vertical-align:middle;}
+th{font-size:11px;color:var(--ink3);font-weight:800;background:#FFFBEF;white-space:nowrap;}
+td b{color:var(--ink);}
+td.rz{font-weight:900;color:var(--blue-d);white-space:nowrap;}
+td.ar{font-weight:900;color:var(--pink-d);white-space:nowrap;}
+tr.cur{background:#FFF7E8;}
+/* ========== 루틴 ========== */
+.steps{counter-reset:st;}
+.step{display:flex;gap:11px;padding:10px 0;border-bottom:1px dashed var(--line2);}
+.step:last-child{border-bottom:0;padding-bottom:0;}
+.step-n{
+  flex:0 0 26px;height:26px;border-radius:9px;background:var(--cream2);
+  border:1.2px solid var(--line);display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:900;color:var(--gold);
+}
+.step-b{flex:1;min-width:0;}
+.step-b .t{font-size:13.5px;font-weight:900;letter-spacing:-.3px;}
+.step-b .t .min{font-size:10.5px;font-weight:800;color:var(--pink-d);background:var(--pink-s);
+  padding:1px 6px;border-radius:6px;margin-left:5px;}
+.step-b .d{font-size:12.5px;color:var(--ink2);line-height:1.58;margin-top:2px;}
+.quote{
+  background:linear-gradient(180deg,#F4FAFF,#EAF4FD);
+  border:1.5px solid #D6E9F8;border-radius:var(--r-md);
+  padding:11px 12px;font-size:12.5px;color:var(--blue-d);line-height:1.6;font-weight:700;
+}
+/* ========== 아코디언 ========== */
+.acc{border:1.5px solid var(--line);border-radius:var(--r-md);background:#fff;margin-bottom:9px;overflow:hidden;}
+.acc-h{display:flex;align-items:center;gap:8px;padding:12px 13px;width:100%;border:0;background:#fff;text-align:left;}
+.acc-h .ai{font-size:15px;}
+.acc-h .at{flex:1;font-size:13.5px;font-weight:900;letter-spacing:-.3px;color:var(--ink);}
+.acc-h .ac{font-size:12px;color:var(--ink3);transition:transform .2s;}
+.acc.open .acc-h .ac{transform:rotate(180deg);}
+.acc-b{display:none;padding:0 13px 13px;font-size:12.5px;color:var(--ink2);line-height:1.68;}
+.acc.open .acc-b{display:block;}
+.acc-b ul{display:flex;flex-direction:column;gap:6px;}
+.acc-b li{padding-left:14px;position:relative;}
+.acc-b li::before{content:"·";position:absolute;left:4px;color:var(--pink);font-weight:900;}
+/* ========== 책장 ========== */
+.stagehead-row{display:flex;align-items:center;gap:8px;margin:16px 2px 8px;}
+.stagehead-row h3{font-size:13.5px;font-weight:900;letter-spacing:-.3px;}
+.stagehead-row .bar-mini{flex:1;height:7px;border-radius:99px;background:#F4EBD8;overflow:hidden;}
+.stagehead-row .bar-mini i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#8FD3B3,#F2A0AF);transition:width .4s;}
+.stagehead-row .cnt{font-size:11px;font-weight:900;color:var(--ink3);white-space:nowrap;}
+.s1 .bar-mini i,.book.s1{}
+.book{
+  display:flex;gap:10px;align-items:flex-start;
+  background:#fff;border:1.5px solid var(--line);border-radius:var(--r-md);
+  padding:11px 12px;margin-bottom:8px;box-shadow:var(--shadow2);
+  transition:background .2s,border-color .2s;
+}
+.book.done{background:linear-gradient(180deg,#F3FBF6,#EBF8F0);border-color:#BEE7D2;}
+.chk{
+  flex:0 0 26px;height:26px;border-radius:9px;border:2px solid #E8D9BD;background:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;
+  margin-top:1px;transition:all .18s;
+}
+.book.done .chk{background:linear-gradient(140deg,#8FD3B3,#5FBE93);border-color:#5FBE93;}
+.book-b{flex:1;min-width:0;}
+.book-t{font-size:13px;font-weight:900;letter-spacing:-.3px;line-height:1.35;}
+.book-t .en{font-weight:800;color:var(--ink);}
+.book-t .ko{font-size:11px;color:var(--ink3);font-weight:700;margin-left:3px;}
+.book-meta{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px;}
+.bl{
+  font-size:10.5px;font-weight:900;padding:2px 6px;border-radius:6px;
+  background:var(--pink-s);color:var(--pink-d);
+}
+.bl.rz{background:var(--blue-s);color:var(--blue-d);}
+.bl.wc{background:var(--cream2);color:var(--gold);}
+.bl.ar{background:#F6F0FF;color:var(--purple-d);}
+.book-tip{font-size:11.5px;color:var(--ink3);line-height:1.5;margin-top:5px;}
+.book-x{border:0;background:transparent;color:#D9C9AC;font-size:15px;padding:2px 2px;line-height:1;}
+/* 미션 */
+.mission{display:flex;gap:9px;align-items:center;padding:9px 11px;background:#fff;
+  border:1.5px solid var(--line);border-radius:12px;margin-bottom:7px;box-shadow:var(--shadow2);}
+.mission.done{background:#F3FBF6;border-color:#BEE7D2;}
+.mission .chk{flex:0 0 22px;height:22px;border-radius:8px;font-size:13px;}
+.mission .mt{flex:1;font-size:12.5px;font-weight:800;color:var(--ink2);}
+.mission.done .mt{color:var(--mint-d);}
+.mission .wk{font-size:10.5px;font-weight:900;color:var(--ink3);}
+/* 추가 폼 */
+.addbox{display:none;}
+.addbox.on{display:block;}
+.field{margin-bottom:8px;}
+.field label{display:block;font-size:11.5px;font-weight:800;color:var(--ink3);margin-bottom:4px;}
+.field input,.field select{
+  width:100%;padding:10px 11px;border:1.5px solid var(--line);border-radius:12px;
+  font-size:13px;background:#FFFDF7;color:var(--ink);outline:none;
+}
+.field input:focus,.field select:focus{border-color:#F2C3CF;background:#fff;}
+.btn{
+  border:0;border-radius:13px;padding:11px 15px;font-size:13.5px;font-weight:900;
+  letter-spacing:-.3px;background:linear-gradient(140deg,#F2A0AF,#E97F9C);color:#fff;
+  box-shadow:0 5px 12px rgba(233,127,156,.28);transition:transform .14s;
+}
+.btn:active{transform:scale(.97);}
+.btn.ghost{background:#fff;color:var(--ink2);border:1.5px solid var(--line);box-shadow:none;}
+.btn.mint{background:linear-gradient(140deg,#9BD9BC,#63BE93);box-shadow:0 5px 12px rgba(99,190,147,.26);}
+.btn.blue{background:linear-gradient(140deg,#9CCBF0,#5F9FD8);box-shadow:0 5px 12px rgba(95,159,216,.26);}
+.btn.full{width:100%;}
+.btn.sm{padding:8px 12px;font-size:12px;border-radius:11px;}
+.row{display:flex;gap:8px;}
+.row>*{flex:1;}
+/* ========== 퀴즈 ========== */
+.quiz-top{
+  background:linear-gradient(135deg,#FFF6E3,#FFEFF4 60%,#EDF8F2);
+  border:1.5px solid #FCE3D8;border-radius:var(--r-lg);padding:15px;
+  box-shadow:var(--shadow);margin-bottom:13px;
+}
+.quiz-top h2{font-size:17px;font-weight:900;letter-spacing:-.5px;}
+.quiz-top p{font-size:12px;color:var(--ink2);margin-top:3px;}
+.stagesel{display:flex;gap:6px;margin-top:11px;}
+.sbtn{
+  flex:1;border:1.5px solid var(--line);background:#fff;border-radius:12px;
+  padding:8px 3px;font-size:11px;font-weight:900;color:var(--ink3);line-height:1.25;
+}
+.sbtn b{display:block;font-size:12.5px;color:var(--ink);}
+.sbtn.on{background:linear-gradient(180deg,#FFF0F4,#FFE5EC);border-color:#F5C3D1;}
+.sbtn.on b{color:var(--pink-d);}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:13px;}
+.stat{background:#fff;border:1.5px solid var(--line);border-radius:13px;padding:8px 5px;text-align:center;box-shadow:var(--shadow2);}
+.stat .n{font-size:15px;font-weight:900;letter-spacing:-.5px;color:var(--ink);}
+.stat .l{font-size:9.5px;color:var(--ink3);font-weight:800;margin-top:1px;}
+.passage{
+  background:#fff;border:1.5px solid var(--line);border-radius:var(--r-lg);
+  padding:16px;box-shadow:var(--shadow);margin-bottom:12px;
+}
+.passage .ptitle{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px;}
+.passage .ptitle h3{font-size:14.5px;font-weight:900;letter-spacing:-.3px;}
+.passage .ptitle .lvl{font-size:10.5px;font-weight:900;color:var(--pink-d);background:var(--pink-s);padding:2px 7px;border-radius:7px;white-space:nowrap;}
+.en-text{
+  font-size:15.5px;line-height:1.85;color:#3F3730;letter-spacing:.1px;
+  font-family:Georgia,"Times New Roman",serif;
+}
+.en-text b{color:#B4687C;}
+.speak{
+  border:1.5px solid #D6E9F8;background:linear-gradient(180deg,#F6FBFF,#EAF4FD);
+  color:var(--blue-d);border-radius:11px;padding:7px 11px;font-size:11.5px;font-weight:900;
+  display:inline-flex;align-items:center;gap:5px;margin-top:11px;
+}
+.speak:active{transform:scale(.97);}
+.qbox{margin-bottom:12px;}
+.qhead{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.qi{font-size:11px;font-weight:900;color:var(--pink-d);background:var(--pink-s);padding:2px 7px;border-radius:7px;}
+.qq{font-size:14.5px;font-weight:900;letter-spacing:-.2px;margin:8px 0 10px;line-height:1.45;font-family:Georgia,"Times New Roman",serif;}
+.opts{display:flex;flex-direction:column;gap:8px;}
+.opt{
+  display:flex;align-items:center;gap:10px;width:100%;text-align:left;
+  background:#fff;border:1.8px solid var(--line);border-radius:15px;
+  padding:13px 14px;font-size:14px;font-weight:700;color:var(--ink);
+  font-family:Georgia,"Times New Roman",serif;line-height:1.4;
+  transition:transform .12s,background .18s,border-color .18s;
+}
+.opt:active{transform:scale(.985);}
+.opt .on{
+  flex:0 0 24px;height:24px;border-radius:8px;background:#FBF3E2;border:1.2px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:900;color:var(--gold);
+  font-family:inherit;
+}
+.opt.right{background:linear-gradient(180deg,#F1FBF5,#E4F7EC);border-color:#7FCFA8;}
+.opt.right .on{background:#7FCFA8;color:#fff;border-color:#7FCFA8;}
+.opt.wrong{background:linear-gradient(180deg,#FFF3F5,#FFE7EC);border-color:#F0A7B8;}
+.opt.wrong .on{background:#F0A7B8;color:#fff;border-color:#F0A7B8;}
+.opt[disabled]{cursor:default;}
+.fb{
+  margin-top:10px;border-radius:14px;padding:11px 13px;font-size:12.5px;line-height:1.6;display:none;
+}
+.fb.show{display:block;animation:fade .2s ease;}
+.fb.ok{background:linear-gradient(180deg,#F1FBF5,#E6F8EF);border:1.5px solid #B7E2CC;color:#2F7A58;}
+.fb.no{background:linear-gradient(180deg,#FFF4F6,#FFE9EE);border:1.5px solid #F7C6D3;color:#B2596F;}
+.fb .ft{font-weight:900;font-size:13px;margin-bottom:3px;display:flex;align-items:center;gap:5px;}
+.fb .why{font-weight:700;}
+.quiznav{display:flex;gap:8px;margin-top:12px;}
+.done-card{
+  background:linear-gradient(135deg,#FFF3D9,#FFEFF3 55%,#EAF8F0);
+  border:1.5px solid #FBE0C4;border-radius:var(--r-lg);padding:18px;text-align:center;
+  box-shadow:var(--shadow);margin-bottom:13px;
+}
+.done-emo{font-size:44px;line-height:1;}
+.done-card h3{font-size:18px;font-weight:900;letter-spacing:-.5px;margin:7px 0 3px;}
+.done-card p{font-size:12.5px;color:var(--ink2);}
+.done-score{display:flex;justify-content:center;gap:16px;margin-top:12px;}
+.done-score div{font-size:11px;font-weight:800;color:var(--ink3);}
+.done-score div b{display:block;font-size:18px;color:var(--ink);letter-spacing:-.5px;}
+.setlist{display:flex;flex-direction:column;gap:7px;}
+.setitem{
+  display:flex;align-items:center;gap:9px;width:100%;text-align:left;
+  background:#fff;border:1.5px solid var(--line);border-radius:13px;padding:10px 12px;
+  box-shadow:var(--shadow2);
+}
+.setitem .si-e{font-size:15px;}
+.setitem .si-t{flex:1;min-width:0;font-size:12.5px;font-weight:800;color:var(--ink2);line-height:1.35;}
+.setitem .si-s{font-size:10.5px;font-weight:900;color:var(--ink3);white-space:nowrap;}
+.setitem.solved{background:#F5FBF8;border-color:#C7E8D7;}
+.setitem.solved .si-t{color:var(--mint-d);}
+/* ========== 하단 네비 ========== */
+.nav{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:0;z-index:40;
+  width:100%;max-width:520px;height:calc(var(--nav-h) + env(safe-area-inset-bottom,0px));
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  display:flex;align-items:stretch;
+  background:rgba(255,253,246,.97);
+  border-top:1.5px solid var(--line);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  box-shadow:0 -6px 22px rgba(183,152,108,.10);
+}
+.nav button{
+  flex:1;border:0;background:transparent;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:2px;padding:6px 0 4px;
+  color:#B3A492;font-size:10px;font-weight:800;letter-spacing:-.3px;
+}
+.nav button .ni{font-size:19px;line-height:1;filter:grayscale(.55);opacity:.75;transition:all .18s;}
+.nav button.on{color:var(--pink-d);}
+.nav button.on .ni{filter:none;opacity:1;transform:translateY(-1px);}
+.nav button.on::after{content:"";position:absolute;top:0;width:26px;height:3px;border-radius:0 0 4px 4px;background:var(--pink);}
+.nav button{position:relative;}
+/* 토스트 */
+.toast{
+  position:fixed;left:50%;bottom:calc(var(--nav-h) + 18px);transform:translate(-50%,14px);
+  background:rgba(74,63,53,.94);color:#FFF8EC;font-size:12.5px;font-weight:800;
+  padding:10px 16px;border-radius:14px;opacity:0;pointer-events:none;transition:all .25s;z-index:60;
+  max-width:80%;text-align:center;
+}
+.toast.on{opacity:1;transform:translate(-50%,0);}
+@media (max-width:360px){
+  .brand-title{font-size:17px;}
+  .hero h1{font-size:20px;}
+  .sbtn{font-size:10px;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ======= 상단 ======= -->
+  <div class="topbar">
+    <div class="brand">
+      <span class="brand-mark">📚</span>
+      <div>
+        <div class="brand-title">유니의 AR 3.0</div>
+        <div class="brand-sub">15주 리딩 프로젝트 · 영유 2년차</div>
+      </div>
+    </div>
+    <div class="streak-chip" id="streakChip">🔥 0일</div>
+  </div>
+
+  <!-- ======= 홈 ======= -->
+  <section class="view active" id="view-home">
+    <div class="hero">
+      <div class="hero-eyebrow">2026.11.16 ~ 2027.02.28 · 15주</div>
+      <h1>지금 <span class="num">AR 1.x</span>에서<br><span class="num">3.0+</span>까지, 15주</h1>
+      <p>라즈키즈로 매일 35분, 실물책으로 주 4권. 초등 입학 전에 챕터북이 편해지는 길.</p>
+      <div class="hero-chips">
+        <span class="mini">👧 유니 · 7살</span>
+        <span class="mini">🎒 영유 2년차</span>
+        <span class="mini">📱 라즈키즈</span>
+        <span class="mini">🎯 목표 AR 3.0~3.4</span>
+      </div>
+    </div>
+
+    <button class="btn full" id="homeStart" style="padding:16px;font-size:15.5px;margin-bottom:14px;border-radius:16px;">📝 오늘의 문제 풀기 ▶</button>
+
+    <div class="card">
+      <div class="prog-head">
+        <div>
+          <div class="prog-label">15주 프로그램 진행률</div>
+          <div class="small" id="progSub">책·미션·문제를 체크하면 자동으로 올라가요</div>
+        </div>
+        <div class="prog-pct" id="progPct">0%</div>
+      </div>
+      <div class="track"><div class="bar" id="progBar"></div></div>
+      <div class="stage-dots" id="stageDots"></div>
+    </div>
+
+    <div class="quick">
+      <button class="qbtn" data-go="quiz">
+        <span class="qem">📝</span>
+        <span class="qt">오늘의 문제</span>
+        <span class="qs" id="quickQuizSub">1세트 풀러 가기</span>
+      </button>
+      <button class="qbtn" data-go="books">
+        <span class="qem">📚</span>
+        <span class="qt">책장 체크</span>
+        <span class="qs" id="quickBookSub">읽은 책 체크하기</span>
+      </button>
+      <button class="qbtn" data-go="routine">
+        <span class="qem">⏰</span>
+        <span class="qt">35분 루틴</span>
+        <span class="qs">오늘 뭐 할지 보기</span>
+      </button>
+      <button class="qbtn" data-go="roadmap">
+        <span class="qem">🗺️</span>
+        <span class="qt">4단계 로드맵</span>
+        <span class="qs">지금 몇 단계인지 보기</span>
+      </button>
+    </div>
+
+    <div class="card tint">
+      <div class="sec-title"><span class="em">🎯</span> 지금 유니의 자리</div>
+      <div class="kv"><span class="k">현재</span><span class="v" id="homeNow">AR 1.x · 라즈키즈 G~I</span></div>
+      <div class="kv"><span class="k">이번 단계</span><span class="v" id="homeStage">1단계 · 유창성 다지기</span></div>
+      <div class="kv"><span class="k">이번 주 목표</span><span class="v" id="homeGoal">라즈키즈 10권 + 실물책 4권</span></div>
+      <hr class="hr">
+      <div class="small">라즈키즈 레벨을 고르면 화면 전체가 그 단계에 맞춰 안내해요.</div>
+      <div class="field" style="margin-top:8px;margin-bottom:0;">
+        <select id="levelSelect" aria-label="라즈키즈 현재 레벨">
+          <option value="0">아직 잘 모르겠어요 (G~I로 시작)</option>
+          <option value="G">G · AR 1.5 전후</option>
+          <option value="H">H · AR 1.6 전후</option>
+          <option value="I">I · AR 1.8 전후</option>
+          <option value="J">J · AR 2.0 전후</option>
+          <option value="K">K · AR 2.3 전후</option>
+          <option value="L">L · AR 2.6 전후</option>
+          <option value="M">M · AR 2.8 전후</option>
+          <option value="N">N · AR 3.0 전후</option>
+          <option value="O">O · AR 3.2 전후</option>
+          <option value="P">P · AR 3.4 전후</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sec-title"><span class="em">📅</span> 15주 한눈에</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">1</div><div class="step-b"><div class="t">1~3주 · AR 1.5~1.9</div><div class="d">라즈키즈 G~I. 짧은 책을 많이, 문장을 끝까지 읽는 습관.</div></div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-b"><div class="t">4~7주 · AR 2.0~2.4</div><div class="d">라즈키즈 J~K + 얼리 챕터북 입문. 그림이 줄어드는 첫 관문.</div></div></div>
+        <div class="step"><div class="step-n">3</div><div class="step-b"><div class="t">8~11주 · AR 2.5~2.9</div><div class="d">라즈키즈 L~M + 본격 챕터북. 어휘·추론을 같이 키우기.</div></div></div>
+        <div class="step"><div class="step-n">4</div><div class="step-b"><div class="t">12~15주 · AR 3.0~3.4</div><div class="d">라즈키즈 N~P + AR 3점대 안착. 입학 전 마무리.</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= 로드맵 ======= -->
+  <section class="view" id="view-roadmap">
+    <div class="card tint">
+      <div class="sec-title"><span class="em">💡</span> 왜 15주에 3.0이 가능할까</div>
+      <p class="lead">영유 2년차는 <b>듣기와 파닉스가 이미 강한</b> 아이예요. 지금 부족한 건 소리→글자 변환 속도가 아니라, <b>긴 글을 끝까지 붙잡는 힘(스태미나)</b>과 <b>이해 정확도</b>입니다. 그래서 이 프로그램은 새 단어를 늘리는 공부가 아니라, 이미 아는 말을 <b>더 긴 글에서 스스로 읽어내는 훈련</b>에 무게를 둬요.</p>
+      <hr class="hr">
+      <ul class="small" style="display:flex;flex-direction:column;gap:5px;">
+        <li>· 하루 35분 × 주 5일 = 주 3시간. 15주면 약 45시간 = 라즈키즈 100권 + 실물책 45권 분량</li>
+        <li>· AR 지수 1.x → 3.0은 <b>책 난이도 두 단계</b> 상승. 챕터북 초반(2.6~3.2)을 편하게 읽으면 도달하는 폭</li>
+        <li>· 핵심은 속도가 아니라 <b>퀴즈 정확도 85% 이상</b>을 유지하며 단계를 올리는 것</li>
+      </ul>
+    </div>
+
+    <div class="sec-title" style="padding:0 2px;"><span class="em">🗺️</span> 4단계 로드맵</div>
+    <div id="stageCards"></div>
+
+    <div class="card">
+      <div class="sec-title"><span class="em">🔗</span> 라즈키즈 ↔ AR 지수 대응표</div>
+      <p class="small">Learning A-Z 공식 상관표(ATOS 구간)와 실제 AR 책 레벨을 함께 놓고 만든 표예요. 같은 알파벳 안에서도 책마다 조금씩 달라서 <b>±0.2 정도는 정상</b>이에요.</p>
+      <div class="tablewrap" style="margin-top:9px;">
+        <table>
+          <thead><tr><th>라즈키즈</th><th>AR(ATOS)</th><th>학년 감각</th><th>이 단계의 책</th></tr></thead>
+          <tbody id="rzTable"></tbody>
+        </table>
+      </div>
+      <p class="small" style="margin-top:9px;">※ Learning A-Z 공식표는 D~J를 <b>ATOS 1.0~2.4</b>, K~P를 <b>2.5~3.5</b>로 묶어요. 위 표는 그 안에서 실제 책 레벨을 기준으로 더 잘게 나눈 실전용 구분입니다.</p>
+    </div>
+
+    <div class="card">
+      <div class="sec-title"><span class="em">📆</span> 주차별 계획 (15주)</div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>주</th><th>라즈키즈</th><th>실물책</th><th>이 주의 숙제</th></tr></thead>
+          <tbody id="weekTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sec-title"><span class="em">🏁</span> 단계 이동 기준</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">✓</div><div class="step-b"><div class="t">1→2단계</div><div class="d">라즈키즈 I 10권을 <b>퀴즈 85% 이상</b>으로, 실물책 8권 완독.</div></div></div>
+        <div class="step"><div class="step-n">✓</div><div class="step-b"><div class="t">2→3단계</div><div class="d">AR 2.0~2.4 책 5권 퀴즈 통과 + <b>소리 내어 3문장 리텔링</b>이 막힘없이.</div></div></div>
+        <div class="step"><div class="step-n">✓</div><div class="step-b"><div class="t">3→4단계</div><div class="d">AR 2.6~2.9 챕터북 3권을 <b>하루 20분씩 나눠서</b> 끝까지. 퀴즈 80% 이상.</div></div></div>
+        <div class="step"><div class="step-n">✓</div><div class="step-b"><div class="t">4단계 졸업</div><div class="d">AR 3.0~3.4 책 3권 퀴즈 85% 이상 → 입학 전 목표 달성.</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= 루틴 ======= -->
+  <section class="view" id="view-routine">
+    <div class="card tint">
+      <div class="sec-title"><span class="em">⏰</span> 하루 35분, 이 순서로</div>
+      <p class="small">같은 시간, 같은 자리에서 시작해요. 순서를 바꾸면 "읽기"가 "듣기"로 변해요.</p>
+    </div>
+
+    <div class="card">
+      <div class="sec-title"><span class="em">🌅</span> 평일 루틴 (월~금)</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">1</div><div class="step-b"><div class="t">워밍업 · 오늘의 책 고르기<span class="min">3분</span></div><div class="d">라즈키즈에서 오늘 읽을 책 1권을 유니가 직접 고르게 해요. 엄마는 <b>표지 보고 내용 짐작하기</b>만 질문: "What do you think happens?"</div></div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-b"><div class="t">라즈키즈 Listen → Read → Quiz<span class="min">12분</span></div><div class="d">① Listen(음원 1회, 손가락으로 글자 짚기) → ② Read(직접 소리 내어 읽기, 엄마는 끊지 않기) → ③ Quiz(라즈키즈 문제 5문항). <b>Listen을 먼저 해도 괜찮지만, 반드시 Read를 거쳐야 해요.</b></div></div></div>
+        <div class="step"><div class="step-n">3</div><div class="step-b"><div class="t">실물책 읽기<span class="min">12분</span></div><div class="d">오늘의 라즈키즈 책과 <b>같은 주제·같은 레벨</b>의 실물책 10~15쪽. 소리 내어 읽고, 모르는 단어는 3개까지만 표시.</div></div></div>
+        <div class="step"><div class="step-n">4</div><div class="step-b"><div class="t">3문장 리텔링 + 문제 1세트<span class="min">8분</span></div><div class="d">"누가·무엇을·어떻게 됐다" 3문장으로 말하기 → 앱의 <b>오늘의 문제</b> 1세트(3~4문항) 풀기. 틀린 문제는 해설을 엄마가 읽어주기.</div></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sec-title"><span class="em">🌞</span> 주말 루틴 (토·일)</div>
+      <div class="steps">
+        <div class="step"><div class="step-n">1</div><div class="step-b"><div class="t">지난주 책 다시 읽기<span class="min">10분</span></div><div class="d">가장 재미있었던 책 1권을 <b>혼자</b> 읽기. 이때 유창성(끊김 없이)이 늘었는지 확인해요.</div></div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-b"><div class="t">새 챕터북 도전<span class="min">20분</span></div><div class="d">주말엔 <b>평일보다 살짝 어려운 책</b>을 엄마와 번갈아 읽기(한 쪽씩). 2단계부터는 이 시간이 챕터북 진입 통로가 돼요.</div></div></div>
+        <div class="step"><div class="step-n">3</div><div class="step-b"><div class="t">AR 퀴즈 + 칭찬 스티커<span class="min">5분</span></div><div class="d">실물책 AR 퀴즈(가능하면 Renaissance 앱/사이트) 또는 앱의 문제 세트. 결과와 상관없이 <b>읽은 것</b>을 칭찬해 주세요.</div></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sec-title"><span class="em">🎧</span> 라즈키즈를 AR로 바꾸는 법</div>
+      <div class="quote">라즈키즈 G·H·I → J·K → L·M → N·O·P<br>이 네 칸을 15주에 걸쳐 한 칸씩 올라가면 AR 3.0 구간에 도착해요.</div>
+      <div class="steps" style="margin-top:11px;">
+        <div class="step"><div class="step-n">1</div><div class="step-b"><div class="t">라즈키즈는 '읽기 근육', AR은 '확인 저울'</div><div class="d">라즈키즈 책은 AR 퀴즈가 붙어 있지 않은 경우가 많아요. 그래서 라즈키즈에서는 <b>자체 Comprehension Quiz(5문항)</b>로 이해를 확인하고, AR 지수는 <b>짝지어 둔 실물책</b>으로 확인하는 게 안전해요.</div></div></div>
+        <div class="step"><div class="step-n">2</div><div class="step-b"><div class="t">짝짓기 규칙: 라즈키즈 1권 = 실물책 1권</div><div class="d">같은 단계 안에서 <b>라즈키즈로 소리를 익히고 → 실물책으로 같은 난이도를 혼자 읽기</b>. 예: 라즈키즈 G·H(AR 1.5~1.7) ↔ Fly Guy(1.5), Pete the Cat(1.5).</div></div></div>
+        <div class="step"><div class="step-n">3</div><div class="step-b"><div class="t">레벨 올리는 신호</div><div class="d">라즈키즈 퀴즈 3회 연속 80% 이상 + 그 레벨 책을 <b>막힘 없이 소리 내어</b> 읽으면 다음 알파벳으로. 막히면 한 단계 아래에서 3권 더.</div></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sec-title"><span class="em">💗</span> 부모 코칭 & 트러블슈팅</div>
+      <div id="coachList"></div>
+    </div>
+  </section>
+
+  <!-- ======= 책장 ======= -->
+  <section class="view" id="view-books">
+    <div class="card tint">
+      <div class="sec-title"><span class="em">📚</span> 책장 & 진행 트래커</div>
+      <p class="small">책을 다 읽고 AR 퀴즈(또는 리텔링)까지 하면 체크! 체크는 이 폰에 자동 저장돼요.</p>
+      <div class="row" style="margin-top:10px;">
+        <button class="btn ghost sm" id="addBookToggle">＋ 우리 집 책 추가</button>
+        <button class="btn ghost sm" id="exportBtn">결과 복사</button>
+      </div>
+    </div>
+
+    <div class="addbox" id="addBookBox" style="margin-bottom:14px;">
+      <div class="card">
+        <div class="field">
+          <label>책 제목 (영어 또는 한글)</label>
+          <input id="nbTitle" type="text" placeholder="예: Mercy Watson to the Rescue" autocomplete="off">
+        </div>
+        <div class="row">
+          <div class="field"><label>AR 레벨</label><input id="nbBL" type="text" inputmode="decimal" placeholder="2.7"></div>
+          <div class="field"><label>단계</label>
+            <select id="nbStage"><option value="1">1단계</option><option value="2">2단계</option><option value="3">3단계</option><option value="4">4단계</option></select>
+          </div>
+        </div>
+        <button class="btn mint full sm" id="addBookSave">책장에 넣기</button>
+      </div>
+    </div>
+
+    <div id="bookStages"></div>
+
+    <div class="card">
+      <div class="sec-title"><span class="em">🎖️</span> 주간 미션 (체크하면 진행률 반영)</div>
+      <div id="missionList"></div>
+    </div>
+  </section>
+
+  <!-- ======= 문제 ======= -->
+  <section class="view" id="view-quiz">
+    <div id="quizHome">
+      <div class="quiz-top">
+        <h2>📝 오늘의 문제</h2>
+        <p>하루 1세트(3~4문항). 맞히면 바로 설명이 나와요.</p>
+        <div class="stagesel" id="stageSel"></div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="n" id="stToday">0</div><div class="l">오늘 세트</div></div>
+        <div class="stat"><div class="n" id="stStreak">0</div><div class="l">연속 일수</div></div>
+        <div class="stat"><div class="n" id="stStars">0</div><div class="l">모은 별</div></div>
+        <div class="stat"><div class="n" id="stAcc">-</div><div class="l">정답률</div></div>
+      </div>
+
+      <button class="btn full" id="startDaily" style="margin-bottom:13px;">오늘의 1세트 풀기 ▶</button>
+
+      <div class="card">
+        <div class="sec-title"><span class="em">🗂️</span> <span id="setListTitle">1단계 문제 모음</span></div>
+        <p class="small" id="setListSub">아무 세트나 골라 풀어도 돼요.</p>
+        <div class="setlist" id="setList" style="margin-top:9px;"></div>
+      </div>
+
+      <div class="card tint">
+        <div class="sec-title"><span class="em">🌱</span> 문제 푸는 방법</div>
+        <div class="steps">
+          <div class="step"><div class="step-n">1</div><div class="step-b"><div class="t">먼저 지문을 소리 내어 읽어요</div><div class="d">모르는 단어가 나와도 멈추지 말고 끝까지. 🔊 버튼으로 원어민 발음을 들을 수도 있어요.</div></div></div>
+          <div class="step"><div class="step-n">2</div><div class="step-b"><div class="t">문제를 듣고 답을 눌러요</div><div class="d">정답이면 초록색, 틀리면 다시 생각할 수 있게 해설이 나와요. 틀려도 별은 줄지 않아요.</div></div></div>
+          <div class="step"><div class="step-n">3</div><div class="step-b"><div class="t">다 풀면 오늘의 기록이 쌓여요</div><div class="d">연속 일수와 정답률이 자동 저장돼서 엄마가 나중에 확인할 수 있어요.</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="quizPlay" style="display:none;"></div>
+  </section>
+
+  <!-- ======= 하단 네비 ======= -->
+  <nav class="nav" id="nav">
+    <button data-go="home" class="on"><span class="ni">🏠</span>홈</button>
+    <button data-go="roadmap"><span class="ni">🗺️</span>로드맵</button>
+    <button data-go="routine"><span class="ni">⏰</span>루틴</button>
+    <button data-go="books"><span class="ni">📚</span>책장</button>
+    <button data-go="quiz"><span class="ni">📝</span>문제</button>
+  </nav>
+
+  <div class="toast" id="toast"></div>
+</div>
+<script>
+/* =========================================================
+   유니 AR 3.0 · 15주 프로그램 데이터
+   AR(ATOS) 수치는 Renaissance AR BookFinder / TeachingBooks
+   공개 레코드에서 확인한 값입니다(2026-11 확인).
+   ========================================================= */
+var APP_KEY = 'yuni_ar3_program_v1';
+
+var STAGES = [
+  {
+    n: 1, weeks: '1~3주', name: '유창성·다독 완성', ar: '1.5 ~ 1.9', rz: 'G ~ I',
+    goal: '짧은 책을 매일 한 권씩, 끊기지 않고 끝까지 읽는 힘을 만들어요. 문장 길이를 늘리고, 처음으로 "읽고 나서 말하기"를 시작합니다.',
+    rows: [
+      ['라즈키즈', 'G → H → I (주 10~12권)'],
+      ['실물책', '주 4권 (Fly Guy · Pete the Cat 중심)'],
+      ['하루', '라즈키즈 1권 + 실물책 10쪽'],
+      ['졸업 기준', 'I 레벨 10권 퀴즈 85% + 실물책 8권 완독'],
+      ['핵심', '속도보다 "끝까지 읽기". 모르는 단어는 넘어가기']
+    ],
+    books: [
+      { en: 'Fly Guy (Hi! Fly Guy 외)', ko: '플라이 가이', bl: '1.3~2.1', wc: '약 250~350', quiz: '', tip: '짧은 문장이 반복되고 그림이 많아요. 소리 내어 읽기 첫 책으로 가장 안전해요. (Hi! Fly Guy 1.5 / Shoo, Fly Guy! 1.7)' },
+      { en: 'Pete the Cat: I Love My White Shoes', ko: '피트 더 캣', bl: '1.5', wc: '275', quiz: '154280', tip: '노래처럼 읽혀서 유창성이 빨리 늘어요. 단, 외워서 읽는지 글자를 보는지 꼭 확인!' },
+      { en: 'Splat the Cat', ko: '스플랫 더 캣', bl: '1.9', wc: '442', quiz: '124182', tip: '1단계 막바지 책. I Can Read 판(Sings Flat 1.8)은 더 쉬워요.' },
+      { en: 'Elephant & Piggie: We Are in a Book!', ko: '엘리펀트 앤 피기', bl: '0.9', wc: '256', quiz: '154356', tip: '쉬어가는 책. 힘든 날 "오늘은 이거" 하고 자신감을 채워 주세요.' },
+      { en: 'Green Eggs and Ham', ko: '닥터 수스', bl: '1.5', wc: '769', quiz: '9021', tip: '라임이 살아 있어 소리 내어 읽기 훈련에 좋아요. 다만 단어 수가 많아 하루에 나눠 읽기.' },
+      { en: 'Amelia Bedelia Goes Camping', ko: '아멜리아 베델리아', bl: '1.8', wc: '1,351', quiz: '10503', tip: '1단계 막바지 책. 말장난이 있어서 엄마가 한 번 웃어 주면 이해가 확 올라가요.' }
+    ]
+  },
+  {
+    n: 2, weeks: '4~7주', name: '얼리 챕터북 입문', ar: '2.0 ~ 2.4', rz: 'J ~ K',
+    goal: '그림이 조금 줄어든 책으로 넘어갑니다. 한 페이지에 3~5문장, chapters가 3~5개인 책을 하루 1~2챕터씩 나눠 읽어요.',
+    rows: [
+      ['라즈키즈', 'J → K (주 10권)'],
+      ['실물책', '주 4~5권 (Nate the Great · Young Cam Jansen)'],
+      ['하루', '라즈키즈 1권 + 실물책 1챕터'],
+      ['졸업 기준', 'AR 2.0~2.4 책 5권 퀴즈 통과 + 3문장 리텔링'],
+      ['핵심', '"그림 없이도 기억하기" — 읽고 나서 장면을 말로 그려보기']
+    ],
+    books: [
+      { en: 'Nate the Great', ko: '네이트 더 그레이트', bl: '2.0', wc: '1,594', quiz: '330', tip: '추리 구조라 "왜?" 질문이 자연스러워요. 2단계 첫 챕터북으로 딱.' },
+      { en: 'Nate the Great and Me', ko: '네이트 더 그레이트', bl: '2.4', wc: '약 1,700', quiz: '24958', tip: '같은 시리즈 안에서 레벨이 올라가는 걸 경험시켜 주세요.' },
+      { en: 'Young Cam Jansen and the Missing Cookie', ko: '영 캠 잰슨', bl: '2.5', wc: '약 1,200', quiz: '14650', tip: '시리즈 2.3~2.9. 2단계 후반의 살짝 도전 책이에요. 그림 단서로 추리해서 재미있어 해요.' },
+      { en: 'Amelia Bedelia Helps Out', ko: '아멜리아 베델리아', bl: '2.3', wc: '1,732', quiz: '20001', tip: '말장난(idiom) 책. 한국어로 "왜 웃긴지" 설명해 주면 어휘가 확 늘어요.' },
+      { en: 'Come Back, Amelia Bedelia', ko: '아멜리아 베델리아', bl: '2.1', wc: '1,245', quiz: '7310', tip: '2.1은 2단계 초입. 시리즈 중 쉬운 책부터 골라 주세요.' },
+      { en: 'Little Critter: Just for You', ko: '리틀 크리터', bl: '2.0', wc: '160', quiz: '7227', tip: '글자 수가 적어 "책 한 권 끝내기" 경험용으로 좋아요.' }
+    ]
+  },
+  {
+    n: 3, weeks: '8~11주', name: '본격 챕터북 전환', ar: '2.5 ~ 2.9', rz: 'L ~ M',
+    goal: '그림이 페이지당 한두 개로 줄어드는 구간. 여기서 포기하는 아이가 가장 많아요. 하루 15~20분씩 나눠 읽고, 어휘를 문맥에서 잡아냅니다.',
+    rows: [
+      ['라즈키즈', 'L → M (주 8권, 질을 올리기)'],
+      ['실물책', '주 3~4권 (Frog and Toad · Henry and Mudge · Mercy Watson)'],
+      ['하루', '라즈키즈 1권 + 챕터 1~2개 (15~20분)'],
+      ['졸업 기준', 'AR 2.6~2.9 챕터북 3권 완독 · 퀴즈 80% 이상'],
+      ['핵심', '한 번에 다 읽지 않기. "챕터 하나 = 오늘의 목표"']
+    ],
+    books: [
+      { en: 'Frog and Toad Are Friends', ko: '프로그 앤 토드', bl: '2.9', wc: '2,281', quiz: '6116', tip: '5개 단편이 들어 있어 "오늘은 1편만"이 가능해요. 3단계의 기준책.' },
+      { en: 'Henry and Mudge: The First Book', ko: '헨리 앤 머지', bl: '2.7', wc: '815', quiz: '7572', tip: '문장은 짧고 이야기는 길어요. 시리즈 전체 2.1~2.9라 레벨 조절이 쉬워요.' },
+      { en: 'Mr. Putter & Tabby Pour the Tea', ko: '미스터 퍼터', bl: '2.8', wc: '576', quiz: '11647', tip: '글자 수가 적은 챕터북. 힘든 주에 부담 없이 한 권.' },
+      { en: 'Poppleton', ko: '포플턴', bl: '2.7', wc: '846', quiz: '25094', tip: '3개의 짧은 에피소드. 리텔링 연습에 좋아요.' },
+      { en: 'Mercy Watson to the Rescue', ko: '머시 왓슨', bl: '2.7', wc: '1,929', quiz: '88160', tip: '그림이 큰 챕터북. 3단계에서 가장 반응이 좋은 시리즈예요.' },
+      { en: 'Amelia Bedelia', ko: '아멜리아 베델리아', bl: '2.5', wc: '1,039', quiz: '5453', tip: '3단계 입구. 관용어를 모르면 웃음이 안 나서, 미리 설명해 주세요.' },
+      { en: 'Magic Tree House #1: Dinosaurs Before Dark', ko: '매직 트리 하우스', bl: '2.6', wc: '4,737', quiz: '6311', tip: '글자 수가 확 늘어요. 11주차 "도전 책"으로 3일에 나눠 읽기.' }
+    ]
+  },
+  {
+    n: 4, weeks: '12~15주', name: 'AR 3점대 안착', ar: '3.0 ~ 3.4', rz: 'N ~ P',
+    goal: 'AR 3점대 책을 혼자 읽고 퀴즈 85%를 유지합니다. 입학 전 마무리 단계로, 하루 20분 집중 읽기 습관을 완성해요.',
+    rows: [
+      ['라즈키즈', 'N → O → P (주 6권)'],
+      ['실물책', '주 2~3권 (Magic Tree House · Owl Diaries · Junie B.)'],
+      ['하루', '라즈키즈 1권 + 챕터 2개 (20분 집중)'],
+      ['졸업 기준', 'AR 3.0~3.4 책 3권 퀴즈 85% 이상'],
+      ['핵심', '정확도 85% 유지. 떨어지면 반 단계 내려서 다시']
+    ],
+    books: [
+      { en: 'Magic Tree House 시리즈 (2권 이후)', ko: '매직 트리 하우스', bl: '2.6~3.5', wc: '4,500~6,400', quiz: '', tip: '1권은 3단계에서 읽었어요. 시리즈 전체가 AR 2.6~3.5라 4단계에서 레벨을 올려가며 이어 읽기 좋아요.' },
+      { en: 'Owl Diaries #1: Eva\'s Treetop Festival', ko: '아울 다이어리', bl: '3.0', wc: '2,553', quiz: '172240', tip: '일기 형식 + 컬러 그림. 3.0 입문에 부담이 가장 적어요.' },
+      { en: 'Junie B. Jones #1: Stupid Smelly Bus', ko: '주니 B. 존스', bl: '2.9', wc: '6,570', quiz: '6324', tip: '말투가 살아 있는 1인칭. 글자 수는 많지만 문장은 단순해요.' },
+      { en: 'Dragon Masters #1: Rise of the Earth Dragon', ko: '드래곤 마스터즈', bl: '3.1', wc: '6,016', quiz: '169156', tip: '96쪽·6,000단어. 3점대 "진짜 챕터북" 첫 성공 경험용.' },
+      { en: 'Stink #1: The Incredible Shrinking Kid', ko: '스팅크', bl: '3.0', wc: '5,502', quiz: '86218', tip: '유머가 강해 남자아이·여자아이 모두 좋아해요.' },
+      { en: 'Cam Jansen #1: The Mystery of the Stolen Diamonds', ko: '캠 잰슨', bl: '3.2', wc: '4,619', quiz: '308', tip: '추리라서 "증거 찾기" 독해 훈련이 돼요.' },
+      { en: 'Ivy + Bean #1', ko: '아이비 앤 빈', bl: '3.2', wc: '120쪽', quiz: '105488', tip: '두 친구 이야기. 3.2지만 문장이 길지 않아요.' },
+      { en: 'A to Z Mysteries: The Absent Author', ko: 'A to Z 미스터리', bl: '3.4', wc: '8,535', quiz: '17651', tip: '15주 마지막 도전책. 3.4는 입학 후 첫 목표로 이어가도 좋아요.' }
+    ]
+  }
+];
+
+/* 라즈키즈 ↔ AR 대응 */
+var RZ_TABLE = [
+  ['aa ~ C', '0 ~ 0.9', '유아', '알파벳북, 그림책', ''],
+  ['D ~ F', '1.0 ~ 1.4', '초1', 'Biscuit, Sight Word Readers', ''],
+  ['G ~ I', '1.5 ~ 1.9', '초1', 'Fly Guy, Pete the Cat, Splat the Cat', '1'],
+  ['J ~ K', '2.0 ~ 2.4', '초1~2', 'Nate the Great, Little Critter, Young Cam Jansen', '2'],
+  ['L ~ M', '2.5 ~ 2.9', '초2', 'Frog and Toad, Henry and Mudge, Mercy Watson', '3'],
+  ['N ~ P', '3.0 ~ 3.5', '초2~3', 'Magic Tree House, Owl Diaries, Dragon Masters', '4'],
+  ['Q ~ T', '3.6 ~ 4.2', '초3', 'Junie B. 후반, A to Z Mysteries 후반', ''],
+  ['U ~ W', '4.3 ~ 4.9', '초4', 'Charlottes Web, Roald Dahl 초급', '']
+];
+
+/* 주차별 계획 */
+var WEEKS = [
+  ['1주', 'G~H', 'Fly Guy 2권', '매일 소리 내어 10분'],
+  ['2주', 'H', 'Pete the Cat · Splat the Cat', '3문장 리텔링 시작'],
+  ['3주', 'I', 'Fly Guy 3권', '1단계 점검 (I 10권 85%)'],
+  ['4주', 'J', 'Nate the Great 1권', '첫 AR 퀴즈 도전'],
+  ['5주', 'J~K', 'Little Critter', '챕터 나눠 읽기'],
+  ['6주', 'K', 'Young Cam Jansen', '읽고 장면 말로 그리기'],
+  ['7주', 'K', 'Amelia Bedelia', '2단계 점검'],
+  ['8주', 'L', 'Frog and Toad', '단편 1편씩 매일'],
+  ['9주', 'L~M', 'Henry and Mudge', '15분 집중 읽기'],
+  ['10주', 'M', 'Mercy Watson', '챕터 2개씩'],
+  ['11주', 'M', 'Poppleton · Mr. Putter', '3단계 점검 + 매직트리 도전'],
+  ['12주', 'N', 'Magic Tree House 1', '20분 집중 읽기'],
+  ['13주', 'N~O', 'Owl Diaries', '퀴즈 85% 유지'],
+  ['14주', 'O~P', 'Junie B. Jones', '혼자 읽고 리텔링'],
+  ['15주', 'P', 'Cam Jansen · Ivy + Bean', '최종 AR 3.0 퀴즈 3권']
+];
+
+/* 주간 미션 */
+var MISSIONS = [
+  { id: 'm1', wk: '1주', t: '라즈키즈 G~H 7권 읽고 퀴즈 통과하기' },
+  { id: 'm2', wk: '2주', t: 'Fly Guy 3권 읽고 3문장으로 말해보기' },
+  { id: 'm3', wk: '3주', t: '라즈키즈 I 5권 정확도 85% → 2단계 판정' },
+  { id: 'm4', wk: '4주', t: '실물책으로 첫 AR 퀴즈 1회 도전' },
+  { id: 'm5', wk: '5주', t: '60쪽 챕터북 1권 끝까지 읽기' },
+  { id: 'm6', wk: '7주', t: '2단계 점검: AR 2.0~2.4 책 5권 통과' },
+  { id: 'm7', wk: '9주', t: 'Frog and Toad 1권 통째로 혼자 읽기' },
+  { id: 'm8', wk: '11주', t: '20분 집중 읽기 성공 (중간에 안 멈추기)' },
+  { id: 'm9', wk: '13주', t: 'Magic Tree House 1권 완독 + 리텔링' },
+  { id: 'm10', wk: '15주', t: 'AR 3.0~3.4 책 3권 퀴즈 85% → 목표 달성 🎉' }
+];
+
+/* 부모 코칭 */
+var COACH = [
+  {
+    icon: '📊', t: '85% 규칙 — 레벨을 올려도 되는 신호',
+    body: 'AR 퀴즈 정확도가 85% 이상이면 지금 레벨이 "편안한 도전"이라는 뜻이에요. 80~85%면 한 주 더 같은 레벨에서 읽히고, 80% 아래가 2번 나오면 반드시 한 단계 내려주세요. <b>내려가는 건 실패가 아니라 정확도를 다시 세우는 작업</b>이에요. 반대로 90~100%가 3권 연속이면 바로 한 단계 올려도 됩니다.',
+    list: ['85% 이상 = 유지', '80~84% = 같은 레벨 3권 더', '80% 미만 2회 = 반 단계 내리기', '95% 이상 3연속 = 한 단계 올리기']
+  },
+  {
+    icon: '🖼️', t: '그림이 줄어드는 벽 (2.x → 3.0)',
+    body: '2단계까지는 그림이 내용을 절반은 설명해 줘요. 3점대로 가면 그림이 장식이 되고, 아이는 "머릿속으로 장면을 그리는" 힘을 새로 써야 합니다. 이때 대부분 흔들려요.',
+    list: [
+      '읽기 전에 표지·제목으로 배경지식 깔기 (3분)',
+      '챕터 하나 읽고 "지금 무슨 일이 있었지?" 한 문장으로 확인',
+      '모르는 단어 뜻을 바로 알려주지 말고, 앞뒤 문장에서 짐작하게 하기',
+      '그림 많은 챕터북(Owl Diaries, Mercy Watson)에서 시작해 글자 비중을 서서히 늘리기',
+      '2.9에서 3.0으로 바로 뛰지 말고 2.6 → 2.9 → 3.0 순서로'
+    ]
+  },
+  {
+    icon: '🎧', t: '음원·오디오북, 이렇게 쓰면 공부가 됩니다',
+    body: '음원은 "읽기를 대신하는 것"이 아니라 "읽기를 돕는 것"이어야 해요. 듣기만 하면 뇌는 읽지 않아도 되니 편한 길로 갑니다.',
+    list: [
+      '순서 고정: <b>Listen 1회 → 직접 읽기 → Quiz</b> (듣고 끝내지 않기)',
+      'Listen 때는 반드시 손가락으로 글자를 짚게 하기 (소리-글자 연결)',
+      '속도는 0.9~1.0배. 너무 느리면 문장 의미가 끊겨요',
+      '이미 읽은 책의 음원을 자기 전에 듣는 건 좋아요 (복습용)',
+      '라즈키즈 녹음 기능으로 자기 목소리를 들어보게 하면 유창성이 빨리 늘어요'
+    ]
+  },
+  {
+    icon: '📈', t: '라즈키즈 레벨이 안 올라갈 때',
+    body: '레벨이 3주째 그대로라면 대개 이해도 문제가 아니라 <b>유창성(읽는 속도)</b> 또는 <b>흥미</b> 문제예요.',
+    list: [
+      '같은 레벨 다른 책 5권을 골라 "아는 책" 비율을 높이기',
+      '하루 분량을 절반으로 줄이고 대신 매일 하기',
+      '틀린 문제 유형을 보세요: 세부사항이면 다시 찾기 연습, 추론이면 "왜?" 질문 놀이',
+      '읽기 전 단어 3개만 미리 소리 내어 읽기 (미리보기)',
+      '2주에 한 번은 쉬운 책만 읽는 "가벼운 주"를 넣기'
+    ]
+  },
+  {
+    icon: '🎯', t: 'AR 퀴즈 점수가 들쭉날쭉할 때',
+    body: 'AR 퀴즈는 책을 "이해했는지"를 보는 장치예요. 점수가 흔들리면 책 난이도보다 <b>읽는 방식</b>을 먼저 점검하세요.',
+    list: [
+      '퀴즈는 책을 덮은 직후 5분 안에 (기억이 살아 있을 때)',
+      '책을 두 번 읽었다면 퀴즈는 두 번째 직후에',
+      '틀린 문항이 나오면 책을 다시 펴서 그 장면을 찾아 읽기',
+      '점수보다 "왜 그 답을 골랐어?"를 물어보기',
+      '한 권에 퀴즈 2번은 안 돼요 — 첫 결과를 기록'
+    ]
+  },
+  {
+    icon: '😤', t: '"하기 싫어" 할 때',
+    body: '7살에게 15주는 깁니다. 의지가 아니라 <b>구조</b>로 버티게 해주세요.',
+    list: [
+      '시간을 줄이고(35분 → 15분) 끊지 않기. 0보다 낫습니다',
+      '선택권 주기: "라즈키즈 할래, 실물책 할래?"',
+      '앱의 ⭐별·연속 일수를 같이 보며 "오늘 별 하나 더!"',
+      '힘든 날은 Elephant & Piggie 같은 아주 쉬운 책으로 성공 경험',
+      '주 1회는 "유니가 고르는 날"로 완전히 자유롭게'
+    ]
+  },
+  {
+    icon: '🗣️', t: '엄마가 영어를 완벽하게 못 해도 괜찮아요',
+    body: '7살 단계에서 엄마의 역할은 발음 선생님이 아니라 <b>질문자</b>예요. 한국어로 물어도 충분합니다.',
+    list: [
+      '"누가 나왔어?", "어디서 그랬어?", "그다음엔?" 세 가지만',
+      '모르는 단어는 같이 찾아보기 (아는 척보다 낫습니다)',
+      '읽는 도중에 고치지 않기 — 끊으면 이해가 끊겨요. 끝나고 한 번만',
+      '칭찬은 결과가 아니라 행동에: "오늘 20분 앉아 있었네!"'
+    ]
+  }
+];
+</script>
+<script>
+/* =========================================================
+   오늘의 문제 — 4단계 × 8세트 = 32세트 / 120문항
+   각 세트: 주제·세부사항·어휘·추론 유형을 고르게 담았습니다.
+   ========================================================= */
+var QUIZ = [
+
+/* ================= 1단계 · AR 1.5~1.9 / 라즈키즈 G~I ================= */
+{
+  id: "s1-1", stage: 1, title: "Mia's Red Ball", bl: "AR 1.5",
+  text: "Mia has a big red ball. She takes it to the park. Her dog Max sees the ball. Max runs and runs. The ball goes into the tall grass. Mia looks and looks. Then Max puts his nose in the grass and brings the ball back. 'Good dog, Max!' says Mia.",
+  qs: [
+    { q: "What is this story mostly about?", o: ["Mia's new shoes", "Mia and her dog play with a ball", "Max eats dinner", "Mia goes to school"], a: 1, why: "이야기 전체가 미아와 강아지 맥스가 공을 가지고 노는 내용이에요." },
+    { q: "Where does the ball go?", o: ["into the tall grass", "into the water", "under the bed", "up a tree"], a: 0, why: "본문에 'The ball goes into the tall grass.'라고 나와요." },
+    { q: "'Mia looks and looks' means Mia ___.", o: ["reads a book", "sleeps a lot", "searches for a long time", "runs away"], a: 2, why: "'looks and looks'는 같은 말을 두 번 써서 '한참 동안 찾는다'는 뜻이에요." }
+  ]
+},
+{
+  id: "s1-2", stage: 1, title: "The Cat in the Box", bl: "AR 1.5",
+  text: "A big box is in the room. A small cat jumps in. The box is not big, but the cat is happy. 'Come out,' says Mom. The cat does not come out. It is warm in the box. Soon the cat is asleep.",
+  qs: [
+    { q: "What is this story mostly about?", o: ["A cat finds a good place to sleep", "Mom cleans the room", "A cat runs away", "A box is very heavy"], a: 0, why: "고양이가 상자 안이 좋아서 잠이 드는 이야기예요." },
+    { q: "What does Mom want the cat to do?", o: ["eat", "come out", "jump on the bed", "run outside"], a: 1, why: "엄마가 'Come out'이라고 말해요. 상자에서 나오라는 뜻이죠." },
+    { q: "Why does the cat stay in the box?", o: ["It is cold outside", "The box is full of food", "It is warm and the cat is asleep", "Mom is in the box"], a: 2, why: "'It is warm in the box.'와 'the cat is asleep'을 함께 보면 이유를 알 수 있어요." }
+  ]
+},
+{
+  id: "s1-3", stage: 1, title: "Rain, Rain", bl: "AR 1.5",
+  text: "It is a rainy day. Jo cannot play outside. She looks out the window. Her boots are by the door. She puts on her boots. She gets her red umbrella. 'Now I can jump in the water!' she says.",
+  qs: [
+    { q: "What is Jo getting ready to do?", o: ["go to bed", "read a book", "play in the rain", "eat lunch"], a: 2, why: "장화를 신고 우산을 챙긴 뒤 '물웅덩이에서 뛰겠다'고 말해요." },
+    { q: "What color is Jo's umbrella?", o: ["red", "blue", "green", "yellow"], a: 0, why: "'She gets her red umbrella.'에서 빨간색이라고 나와요." },
+    { q: "A 'rainy day' is a day with ___.", o: ["a lot of snow", "a lot of rain", "a lot of wind", "no clouds"], a: 1, why: "rainy는 '비가 오는'이라는 뜻이에요." }
+  ]
+},
+{
+  id: "s1-4", stage: 1, title: "Ben the Dog", bl: "AR 1.6",
+  text: "Ben is my dog. He is big and brown. He likes to run. Every morning we run to the big tree. Ben can run very fast. I cannot run as fast as Ben. But Ben stops and waits for me.",
+  qs: [
+    { q: "What is this story mostly about?", o: ["A girl and her dog run together", "A dog is lost", "Ben eats a big bone", "A tree falls down"], a: 0, why: "매일 아침 함께 달리는 나와 벤 이야기예요." },
+    { q: "What color is Ben?", o: ["black", "white", "brown", "red"], a: 2, why: "'He is big and brown.'에서 갈색이라고 했어요." },
+    { q: "Why does Ben stop?", o: ["He is tired", "He wants to wait for me", "He sees a cat", "He wants food"], a: 1, why: "내가 벤만큼 빠르지 않아서, 벤이 멈춰서 기다려 준다는 뜻이에요." }
+  ]
+},
+{
+  id: "s1-5", stage: 1, title: "The Lost Mitten", bl: "AR 1.5",
+  text: "Tom has one blue mitten. Where is the other one? He looks under the bed. He looks in his bag. He looks in the box. Then he sees something blue in his boot. 'Here it is!' he says.",
+  qs: [
+    { q: "What is Tom looking for?", o: ["his other mitten", "his boot", "his bag", "his hat"], a: 0, why: "한쪽 장갑은 있는데 다른 한쪽을 찾고 있어요." },
+    { q: "Where is the mitten?", o: ["under the bed", "in his boot", "in the box", "in his bag"], a: 1, why: "'He sees something blue in his boot.'에서 장화 안이라는 걸 알 수 있어요." },
+    { q: "'Lost' means ___.", o: ["very clean", "you cannot find it", "very big", "you can eat it"], a: 1, why: "lost는 '잃어버린, 찾을 수 없는'이라는 뜻이에요." }
+  ]
+},
+{
+  id: "s1-6", stage: 1, title: "The Big Slide", bl: "AR 1.7",
+  text: "Lina and her dad go to the park. Lina sees a big slide. She goes up the steps. She looks down. 'It is very high,' she says. Dad is at the bottom. 'I am here,' he says. Lina goes down fast. 'Again!' she says.",
+  qs: [
+    { q: "What is this story mostly about?", o: ["Lina tries the big slide", "Dad makes dinner", "Lina loses her hat", "The park is closed"], a: 0, why: "리나가 높은 미끄럼틀에 도전하는 이야기예요." },
+    { q: "Where is Dad?", o: ["at the top of the slide", "at the bottom of the slide", "in the car", "at home"], a: 1, why: "'Dad is at the bottom.'이라고 나와요." },
+    { q: "What does 'Again!' tell us?", o: ["Lina is scared", "Lina liked the slide", "Lina is hungry", "Lina wants to go home"], a: 1, why: "한 번 타고 '또!'라고 말하는 건 재미있었다는 뜻이에요." }
+  ]
+},
+{
+  id: "s1-7", stage: 1, title: "A Cake for Mom", bl: "AR 1.6",
+  text: "Mom makes a big cake. It is white. I want to help. I put red berries on top. My sister says, 'It looks like a snow hill with red dots!' Mom cuts the cake. We eat it all.",
+  qs: [
+    { q: "What happens in this story?", o: ["They make and eat a cake", "They go to a shop", "Mom makes soup", "They plant a tree"], a: 0, why: "케이크를 만들고 다 같이 먹는 이야기예요." },
+    { q: "What goes on top of the cake?", o: ["red berries", "green leaves", "blue candy", "white sugar"], a: 0, why: "'I put red berries on top.'이라고 했어요." },
+    { q: "'It looks like a snow hill' means the cake is ___.", o: ["white and tall", "cold and wet", "small and flat", "black and round"], a: 0, why: "눈 언덕처럼 보인다 = 하얗고 높다. 케이크가 하얗고 크다는 뜻이에요." }
+  ]
+},
+{
+  id: "s1-8", stage: 1, title: "The Bird on the Ground", bl: "AR 1.6",
+  text: "A little bird is on the ground. It cannot fly. Sam gets a box. He puts soft grass in the box. He puts the bird inside. In the morning, the bird is up. It flies to the tree. 'Bye, bird!' says Sam.",
+  qs: [
+    { q: "What is this story mostly about?", o: ["Sam helps a little bird", "Sam gets a new pet", "A bird eats grass", "Sam cleans his room"], a: 0, why: "샘이 날지 못하는 새를 도와주는 이야기예요." },
+    { q: "What does Sam put in the box?", o: ["water", "soft grass", "a tree", "bread"], a: 1, why: "'He puts soft grass in the box.'라고 나와요." },
+    { q: "How does the bird feel in the morning?", o: ["still sick", "strong enough to fly", "hungry and sad", "afraid of Sam"], a: 1, why: "아침에 새가 나무로 날아가요. 다시 날 수 있게 된 거예요." }
+  ]
+},
+
+/* ================= 2단계 · AR 2.0~2.4 / 라즈키즈 J~K ================= */
+{
+  id: "s2-1", stage: 2, title: "The Missing Lunch", bl: "AR 2.1",
+  text: "At noon, all the children take out their lunch boxes. Anna opens hers and stops. Her sandwich is not there. 'I put it in this morning,' she says. Her friend Joon looks in his bag. 'Here!' he says. 'My mom put two sandwiches in my bag.' Anna laughs. 'Your mom is very kind.' They eat together.",
+  qs: [
+    { q: "What is the problem in the story?", o: ["Anna forgets her lunch box", "Anna's sandwich is missing", "Joon is hungry", "The class is late"], a: 1, why: "안나가 도시락을 열었는데 샌드위치가 없어서 이야기가 시작돼요." },
+    { q: "Where is Anna's sandwich?", o: ["at home", "in Joon's bag", "in the teacher's desk", "on the floor"], a: 1, why: "준의 엄마가 샌드위치를 두 개 넣어서, 하나가 준의 가방에 있었어요." },
+    { q: "Why does Joon have two sandwiches?", o: ["He is very hungry", "His mom packed an extra one by mistake", "Anna gave him one", "He bought two"], a: 1, why: "준도 왜 두 개인지 모르지만, 엄마가 하나 더 넣은 거예요." },
+    { q: "'Extra' most nearly means ___.", o: ["more than you need", "very small", "cold", "broken"], a: 0, why: "extra는 '여분의, 하나 더'라는 뜻이에요." }
+  ]
+},
+{
+  id: "s2-2", stage: 2, title: "The New Girl Next Door", bl: "AR 2.2",
+  text: "On Saturday, a big truck stops in front of the empty house. A girl gets out. She has a red bike. Mina watches from her window. She wants to say hello, but her feet feel heavy. Then the girl waves. 'Do you want to ride bikes?' she asks. Mina runs outside. They ride until the sky turns orange.",
+  qs: [
+    { q: "What is this story mostly about?", o: ["Mina meets her new neighbor", "A truck is broken", "Mina loses her bike", "A family moves away"], a: 0, why: "새로 이사 온 여자아이와 미나가 친해지는 이야기예요." },
+    { q: "What does the new girl have?", o: ["a red bike", "a big dog", "a new house", "a blue ball"], a: 0, why: "'She has a red bike.'라고 나와요." },
+    { q: "Why do Mina's feet feel heavy?", o: ["She is tired", "She is shy", "She is sick", "Her shoes are big"], a: 1, why: "인사하고 싶은데 발이 무겁다는 건 부끄럽고 망설여진다는 뜻이에요." },
+    { q: "'The sky turns orange' tells us that ___.", o: ["it is getting late", "it is raining", "the sun is cold", "it is morning"], a: 0, why: "하늘이 주황색이 되는 건 해가 지는 저녁 시간이에요." }
+  ]
+},
+{
+  id: "s2-3", stage: 2, title: "The Brave Little Turtle", bl: "AR 2.3",
+  text: "A small turtle lives by a pond. Every day, big birds fly over the water. The turtle hides under a rock. 'You are afraid,' says a frog. 'No,' says the turtle. 'I am careful.' One day, the frog gets stuck in a net. The turtle comes out of his shell. He bites the net again and again. The frog is free. 'You are brave!' says the frog.",
+  qs: [
+    { q: "What is this story mostly about?", o: ["A careful turtle helps a friend", "A frog can fly", "A turtle finds a pond", "Birds build a nest"], a: 0, why: "조심스러운 거북이가 친구 개구리를 도와주는 이야기예요." },
+    { q: "Where does the turtle hide?", o: ["under a rock", "in a tree", "in the pond", "under a net"], a: 0, why: "'The turtle hides under a rock.'이라고 나와요." },
+    { q: "What does the turtle do to free the frog?", o: ["He pushes the net", "He bites the net", "He calls the birds", "He hides"], a: 1, why: "'He bites the net again and again.'이라고 했어요." },
+    { q: "'Stuck' means ___.", o: ["not able to move", "very fast", "very happy", "clean"], a: 0, why: "stuck은 '꼼짝 못 하게 갇힌'이라는 뜻이에요." }
+  ]
+},
+{
+  id: "s2-4", stage: 2, title: "Grandma's Garden", bl: "AR 2.1",
+  text: "Grandma has a small garden behind her house. She grows tomatoes, beans, and one very tall sunflower. Every Sunday, I help her water the plants. 'Plants are like children,' she says. 'They need water, sun, and time.' In August, the sunflower is taller than the fence. Grandma cuts it and puts it on the table. 'Look how big it grew,' she says.",
+  qs: [
+    { q: "What is this story mostly about?", o: ["A girl helps in Grandma's garden", "Grandma moves to a new house", "A sunflower is broken", "A girl hates vegetables"], a: 0, why: "할머니 정원에서 함께 식물을 돌보는 이야기예요." },
+    { q: "When does the girl help?", o: ["every morning", "every Sunday", "in August only", "after school"], a: 1, why: "'Every Sunday, I help her water the plants.'라고 나와요." },
+    { q: "What does Grandma mean by 'plants are like children'?", o: ["They can talk", "They need care and time to grow", "They are noisy", "They go to school"], a: 1, why: "물, 햇빛, 시간이 필요하다는 말은 아이처럼 돌봄이 필요하다는 뜻이에요." },
+    { q: "'Grows' means ___.", o: ["gets bigger", "gets smaller", "moves away", "falls down"], a: 0, why: "grow는 '자라다, 커지다'라는 뜻이에요." }
+  ]
+},
+{
+  id: "s2-5", stage: 2, title: "The Class Pet", bl: "AR 2.2",
+  text: "Our class has a pet rabbit named Snow. On Friday, it is my turn to feed her. I open the cage and put in carrots. Snow does not eat. She just sits. I tell my teacher. She looks in the cage and smiles. 'Snow is not sick,' she says. 'She is building a nest.' On Monday, there are four baby rabbits!",
+  qs: [
+    { q: "What happens at the end of the story?", o: ["Snow gets sick", "Snow has four babies", "The class gets a new pet", "The carrots are gone"], a: 1, why: "월요일에 아기 토끼 네 마리가 태어나요." },
+    { q: "What is the girl's job on Friday?", o: ["to clean the cage", "to feed Snow", "to take Snow home", "to build a nest"], a: 1, why: "'it is my turn to feed her'라고 했어요." },
+    { q: "Why does Snow not eat?", o: ["She is getting ready for her babies", "She hates carrots", "She is sleeping", "The food is cold"], a: 0, why: "선생님이 'She is building a nest.'라고 해요. 아기를 기다리는 중이에요." },
+    { q: "A 'nest' is ___.", o: ["a soft home for baby animals", "a kind of food", "a small cage", "a toy"], a: 0, why: "nest는 아기 동물을 위한 보금자리예요." }
+  ]
+},
+{
+  id: "s2-6", stage: 2, title: "Too Many Books", bl: "AR 2.3",
+  text: "Leo loves books. His room is full of them. One day, he cannot open his door. Books fall out! Mom says, 'We need a plan.' They make three piles: keep, give, and maybe. Leo gives away a big bag. Now there is space for his desk. 'I still have plenty,' he says, and he opens a book.",
+  qs: [
+    { q: "What is the problem in the story?", o: ["Leo has too many books", "Leo loses his bag", "Mom takes his desk", "Leo cannot read"], a: 0, why: "책이 너무 많아서 방문이 열리지 않는 게 문제예요." },
+    { q: "How many piles do they make?", o: ["two", "three", "four", "five"], a: 1, why: "keep, give, maybe — 세 개의 더미를 만들어요." },
+    { q: "How does Leo feel about giving books away?", o: ["He is very sad", "He does not care about books", "He is okay because he still has many", "He wants to give all of them"], a: 2, why: "'I still have plenty.'라고 말해요. 아직 충분히 많아서 괜찮다는 뜻이에요." },
+    { q: "'Plenty' means ___.", o: ["more than enough", "very few", "nothing", "broken"], a: 0, why: "plenty는 '충분히 많은'이라는 뜻이에요." }
+  ]
+},
+{
+  id: "s2-7", stage: 2, title: "The Snowman Contest", bl: "AR 2.2",
+  text: "On Saturday, the town has a snowman contest. Every family builds a snowman in the park. We roll three big balls of snow. Dad lifts the second one on top. I make the face with stones and a carrot. Our snowman has a red scarf and a funny hat. The judge walks by. 'This one looks like it is laughing,' she says. We get second prize.",
+  qs: [
+    { q: "What is this story mostly about?", o: ["A family builds a snowman for a contest", "A family goes skiing", "A snowman runs away", "A town has no snow"], a: 0, why: "눈사람 만들기 대회에 나간 가족 이야기예요." },
+    { q: "What do they use for the snowman's face?", o: ["paper and glue", "stones and a carrot", "snow and water", "a hat and a scarf"], a: 1, why: "'I make the face with stones and a carrot.'라고 했어요." },
+    { q: "Why does the judge like their snowman?", o: ["It is very big", "It looks like it is laughing", "It has a red hat", "It is the first one"], a: 1, why: "심사위원이 '웃는 것 같다'고 말해요. 표정이 재미있었던 거예요." },
+    { q: "How does the family feel at the end?", o: ["angry", "proud and happy", "tired and sad", "afraid"], a: 1, why: "2등을 했으니 뿌듯하고 기쁜 마음이에요." }
+  ]
+},
+{
+  id: "s2-8", stage: 2, title: "The Kite That Would Not Fly", bl: "AR 2.1",
+  text: "Won makes a kite from paper and sticks. He takes it to the hill. The wind is strong. He runs, but the kite falls down. He runs again. It falls again. An old man sits on the bench. 'Your tail is too short,' he says. Won ties a long piece of cloth to the kite. This time, the kite goes up high.",
+  qs: [
+    { q: "What is this story mostly about?", o: ["Won fixes his kite and it flies", "Won buys a new kite", "An old man makes a kite", "The wind stops"], a: 0, why: "연이 왜 안 날았는지 알아내고 고쳐서 날리는 이야기예요." },
+    { q: "What was wrong with the kite?", o: ["The tail was too short", "The paper was wet", "The wind was too strong", "It was too big"], a: 0, why: "노인이 'Your tail is too short.'라고 알려줘요." },
+    { q: "What helps Won the most?", o: ["Running faster", "Listening to the old man", "Waiting for the wind", "Making a new kite"], a: 1, why: "혼자 계속 실패하다가 노인의 조언을 듣고 고쳐서 성공해요." },
+    { q: "'Ties' means ___.", o: ["fastens with something", "cuts in half", "throws away", "paints"], a: 0, why: "tie는 '묶다, 매다'라는 뜻이에요." }
+  ]
+},
+
+/* ================= 3단계 · AR 2.5~2.9 / 라즈키즈 L~M ================= */
+{
+  id: "s3-1", stage: 3, title: "The First Sleepover", bl: "AR 2.7",
+  text: "Nora had never slept at a friend's house before. She packed her bag three times. At Emma's house, they built a fort with blankets and ate pizza under the table. When the lights went out, Nora listened to the strange sounds of the house. She could hear a clock ticking in the hall. She felt like calling her mom. Then Emma whispered, 'Nora? Are you awake?' 'Yes,' said Nora. 'Good,' said Emma. 'I'm glad you're here.' Nora smiled in the dark and closed her eyes.",
+  qs: [
+    { q: "What is this story mostly about?", o: ["Nora gets over her worry on her first sleepover", "Emma moves to a new house", "Nora cannot sleep at home", "Two girls make pizza"], a: 0, why: "처음 친구 집에서 자는 밤, 노라가 긴장을 풀고 잠드는 이야기예요." },
+    { q: "What sound does Nora hear?", o: ["a dog barking", "a clock ticking", "rain on the roof", "a car outside"], a: 1, why: "'She could hear a clock ticking in the hall.'이라고 나와요." },
+    { q: "Why does Nora stop wanting to call her mom?", o: ["She is too sleepy", "Emma's words make her feel welcome", "Her mom is coming", "The phone is broken"], a: 1, why: "엠마가 '네가 있어서 좋아'라고 말해 주자 노라가 미소 짓고 눈을 감아요." },
+    { q: "'Whispered' means ___.", o: ["spoke very quietly", "shouted loudly", "sang a song", "cried"], a: 0, why: "whisper는 '속삭이다'라는 뜻이에요." }
+  ]
+},
+{
+  id: "s3-2", stage: 3, title: "The Secret Tree House", bl: "AR 2.6",
+  text: "Behind the garage, old boards and a broken door had been waiting for years. Rosa carried them to the oak tree one by one. She wanted a place that nobody else knew about. On Saturday morning, she nailed the last board in place and climbed up. From the platform, she could see Mrs. Lee's garden and the roof of the school. She heard her brother calling her name in the yard, but she did not answer. She just sat and listened to the leaves.",
+  qs: [
+    { q: "What is this story mostly about?", o: ["Rosa builds a private tree house", "Rosa's brother gets lost", "Rosa cleans the garage", "A tree falls on a house"], a: 0, why: "로사가 아무도 모르는 자기만의 나무집을 만드는 이야기예요." },
+    { q: "Where did Rosa get the materials?", o: ["from a shop", "from behind the garage", "from Mrs. Lee", "from the school"], a: 1, why: "'Behind the garage, old boards and a broken door had been waiting'이라고 해요." },
+    { q: "Why doesn't Rosa answer her brother?", o: ["She cannot hear him", "She wants to be alone", "She is angry with him", "She is asleep"], a: 1, why: "아무도 모르는 곳을 원했고, 혼자 조용히 있고 싶었어요." },
+    { q: "'Nailed' means ___.", o: ["fastened with small metal pieces", "painted with a brush", "cut into small pieces", "washed with water"], a: 0, why: "nail은 못을 박는다는 뜻이에요." }
+  ]
+},
+{
+  id: "s3-3", stage: 3, title: "The Dog Who Found the Way", bl: "AR 2.8",
+  text: "Every summer, Mr. Park walks to the lake with his dog, Bo. One afternoon, he tripped on a root and could not stand up. His leg hurt badly. Bo ran home and stood by the back door, barking. Mrs. Park thought Bo was thirsty. She filled his bowl. Bo did not drink. He ran to the gate and barked again. This time, Mrs. Park followed him down the path to the lake.",
+  qs: [
+    { q: "What is this story mostly about?", o: ["A dog gets help for his hurt owner", "A family goes to the lake", "A dog is thirsty", "Mr. Park finds a root"], a: 0, why: "주인이 다쳐서 일어나지 못하자 보가 집으로 가 도움을 청하는 이야기예요." },
+    { q: "How did Mr. Park get hurt?", o: ["He fell in the lake", "He tripped on a root", "Bo ran into him", "He lifted a rock"], a: 1, why: "'He tripped on a root'이라고 나와요." },
+    { q: "Why does Bo bark at the gate?", o: ["He wants food", "He wants someone to follow him", "He sees another dog", "He wants to go inside"], a: 1, why: "물을 안 마시고 문으로 가서 짖는 건 따라오라는 신호였어요." },
+    { q: "'Tripped' means ___.", o: ["caught his foot and nearly fell", "ran very fast", "sat down to rest", "called for help"], a: 0, why: "trip은 발이 걸려 넘어질 뻔하다는 뜻이에요." }
+  ]
+},
+{
+  id: "s3-4", stage: 3, title: "The School Play", bl: "AR 2.7",
+  text: "Each spring, the school puts on a play. This year, Jae was chosen to be a tree. He was not happy. A tree has no lines and no song. On the night of the play, he stood on stage with his arms out. The girl beside him, pretending to be a bird, could not remember her lines. She looked at him. He whispered the words to her. She said them, and the audience clapped. Afterward, the teacher said, 'Trees help birds.'",
+  qs: [
+    { q: "What is this story mostly about?", o: ["Jae learns that his small part matters", "Jae becomes a bird", "The play is cancelled", "A girl sings a song"], a: 0, why: "나무 역할이 별것 없다고 생각했지만, 실제로 도움이 되는 역할이었다는 걸 깨닫는 이야기예요." },
+    { q: "What part did Jae play?", o: ["a bird", "a tree", "a teacher", "a singer"], a: 1, why: "'Jae was chosen to be a tree.'라고 나와요." },
+    { q: "What did Jae do when the girl forgot her lines?", o: ["He laughed", "He whispered them to her", "He left the stage", "He sang a song"], a: 1, why: "제가 대사를 속삭여 줘서 여자아이가 무사히 말할 수 있었어요." },
+    { q: "'Pretending' means ___.", o: ["acting like something else", "forgetting something", "being very tired", "talking loudly"], a: 0, why: "pretend는 '~인 척하다'라는 뜻이에요." }
+  ]
+},
+{
+  id: "s3-5", stage: 3, title: "The Lunchbox Trade", bl: "AR 2.6",
+  text: "In room 12, the best moment of the day came just before noon. Kids traded crackers for grapes and sandwiches for cookies, until one day the teacher said, 'No more trading.' The room felt quiet and a little sad. The next Monday, Sarah put a small paper on her desk. It said: 'One cookie. Will trade for a story.' By Friday, half the class had written stories. Nobody traded food. They traded words instead.",
+  qs: [
+    { q: "What is this story mostly about?", o: ["Trading food turns into trading stories", "A teacher takes away cookies", "Sarah loses her lunch", "The class writes a play"], a: 0, why: "음식 교환을 금지하자, 사라의 아이디어로 '이야기 교환'이 시작되는 이야기예요." },
+    { q: "What did Sarah offer to trade?", o: ["a cookie", "a sandwich", "a pencil", "a story"], a: 0, why: "사라는 쿠키 하나를 내놓고 이야기를 받겠다고 쪽지를 붙였어요." },
+    { q: "Why did the room feel 'a little sad'?", o: ["The children were disappointed", "It was raining", "The teacher was angry", "It was the last day of school"], a: 0, why: "즐거웠던 음식 교환이 금지되어 아이들이 아쉬워했어요." },
+    { q: "What changed by Friday?", o: ["Everyone stopped eating lunch", "Half the class had written stories", "The teacher traded cookies", "Nobody came to school"], a: 1, why: "'By Friday, half the class had written stories.'라고 나와요." }
+  ]
+},
+{
+  id: "s3-6", stage: 3, title: "The Storm", bl: "AR 2.6",
+  text: "All evening the wind pushed against the windows. Dad checked the flashlight twice. When the lights went out, the house felt like a cave. My little brother, Min, held my sleeve. 'Is it going to fall in?' he asked. I told him about the big oak outside, and how it had been there for more than a hundred years. I said, 'It has heard louder storms than this.' We sat by the window and listened. In an hour, the lights came back.",
+  qs: [
+    { q: "What is this story mostly about?", o: ["A child helps a younger brother during a storm", "A family moves to a new house", "A tree falls on a house", "Dad fixes the lights"], a: 0, why: "폭풍 치는 밤, 동생을 안심시켜 주는 이야기예요." },
+    { q: "How long until the lights came back?", o: ["ten minutes", "about an hour", "all night", "three days"], a: 1, why: "'In an hour, the lights came back.'라고 나와요." },
+    { q: "Why is the house 'like a cave'?", o: ["It is dark and closed in", "It has rocks inside", "It is very cold", "It is underground"], a: 0, why: "불이 꺼져 캄캄하고 답답한 느낌을 동굴에 비유했어요." },
+    { q: "What does the older child do to help Min?", o: ["Turns on the TV", "Tells him the tree has seen worse storms", "Calls their mother", "Gives him a flashlight"], a: 1, why: "100년 넘게 그 자리에 있던 큰 참나무 이야기로 동생을 안심시켜요." }
+  ]
+},
+{
+  id: "s3-7", stage: 3, title: "The Yard Sale", bl: "AR 2.8",
+  text: "After lunch, we put the old toys on a table in front of the house. Everything had a price: a dragon for one dollar, a puzzle for fifty cents, and a bike that had been too small for me since spring. A boy came with his mother. He stared at the bike but did not come closer. His mother whispered something. He shook his head. I thought about the bike and about the boy. I put a new price on the sign: 'Free to a good rider.' He looked at me, and I nodded.",
+  qs: [
+    { q: "What is this story mostly about?", o: ["A child gives a bike to someone who needs it", "A family sells all their toys", "A boy loses his mother", "A bike is too big"], a: 0, why: "돈이 없어 망설이는 아이를 보고 자전거 가격을 '무료'로 바꿔 주는 이야기예요." },
+    { q: "How much did the bike cost at the end?", o: ["one dollar", "fifty cents", "free", "two dollars"], a: 2, why: "표지판을 'Free to a good rider'로 바꿨어요." },
+    { q: "Why didn't the boy come closer at first?", o: ["He did not like the bike", "He probably did not have enough money", "He was late", "He wanted the dragon"], a: 1, why: "자전거를 보면서도 다가오지 못하고, 엄마 말에 고개를 저었어요. 살 돈이 없었던 거예요." },
+    { q: "'Stared' means ___.", o: ["looked for a long time", "ran away quickly", "laughed out loud", "touched softly"], a: 0, why: "stare는 '빤히 쳐다보다'라는 뜻이에요." }
+  ]
+},
+{
+  id: "s3-8", stage: 3, title: "The Library Card", bl: "AR 2.9",
+  text: "My grandmother could not read English well, but she took me to the library every Thursday. She would sit in the big chair by the window and hold her own book, turning the pages slowly. For years I thought she was reading. Then, when I was nine, I saw her crying. 'Grandma, what does it say?' I asked. She put her finger under a word. 'I don't know,' she said. That Thursday, we sat together and I read the book out loud.",
+  qs: [
+    { q: "What is this story mostly about?", o: ["A girl discovers her grandmother could not read English", "A girl gets her first library card", "A grandmother buys a new book", "A library closes down"], a: 0, why: "할머니가 책을 읽는 척하고 있었다는 걸 알게 되는 이야기예요." },
+    { q: "How old was the girl when she found out?", o: ["six", "seven", "nine", "twelve"], a: 2, why: "'when I was nine, I saw her crying'이라고 나와요." },
+    { q: "Why did Grandma carry a book every Thursday?", o: ["She loved the pictures", "She wanted to share the library with her granddaughter", "She forgot her glasses", "She worked at the library"], a: 1, why: "함께 도서관에 가고 싶었고, 손녀 앞에서 다르게 보이고 싶지 않았어요." },
+    { q: "What does 'she put her finger under a word' show?", o: ["She was trying to read", "She was angry", "She was cleaning the page", "She was counting"], a: 0, why: "단어를 짚어 보는 건 읽으려고 애쓰는 모습이에요." }
+  ]
+},
+
+/* ================= 4단계 · AR 3.0~3.4 / 라즈키즈 N~P ================= */
+{
+  id: "s4-1", stage: 4, title: "The Lighthouse Cat", bl: "AR 3.2",
+  text: "For thirty years, Tomas had climbed the hundred and twelve steps of the lighthouse twice each night. He carried oil, checked the lamp, and listened to the sea. His cat, Sable, followed him every time, pausing on the eleventh stair for reasons only she understood. One night a storm struck the island. The lamp went out, and the wind threw rain against the glass until Tomas could not see his own hands. Sable disappeared. Tomas searched the tower and cried her name, but the wind took his voice. Then, at the bottom of the stairwell, he heard a faint sound: the small bell on her collar, ringing as she pushed the oil can forward with her nose.",
+  qs: [
+    { q: "What is this story mostly about?", o: ["A cat helps her owner during a storm", "A man builds a new lighthouse", "A storm destroys an island", "A cat gets lost at sea"], a: 0, why: "폭풍 속에서 고양이 세이블이 기름통을 밀어다 주며 주인을 돕는 이야기예요." },
+    { q: "How many times each night did Tomas climb the stairs?", o: ["once", "twice", "three times", "every hour"], a: 1, why: "'climbed ... twice each night'이라고 나와요." },
+    { q: "Why does Sable push the oil can?", o: ["She is playing", "Tomas needs it to light the lamp", "She wants to hide it", "It is her food"], a: 1, why: "램프가 꺼졌고 불을 밝히려면 기름이 필요했어요." },
+    { q: "A 'faint' sound is ___.", o: ["very quiet and hard to hear", "very loud", "long and boring", "sharp and angry"], a: 0, why: "faint는 '희미한'이라는 뜻이에요." }
+  ]
+},
+{
+  id: "s4-2", stage: 4, title: "The Robot in the Garden", bl: "AR 3.1",
+  text: "Every Saturday, Mr. Ahn's neighbor caught him kneeling among his tomatoes, muttering to a small metal machine. It had a single arm, six wheels, and one cracked camera eye. The children called it Tin Man. Tin Man could not speak, but it could tell if a leaf was too dry by the color of its edge. Mr. Ahn had built it from parts of a washing machine twenty years earlier, and every winter he repaired it. 'Machines are simple,' he told the children. 'They break. Then you fix them. People are harder.' When the first frost came, he wrapped Tin Man in a blanket.",
+  qs: [
+    { q: "What is this story mostly about?", o: ["An old man builds and cares for a simple robot", "Children build a washing machine", "A garden has no water", "A robot learns to speak"], a: 0, why: "안 씨가 오래된 부품으로 만든 로봇을 아끼고 돌보는 이야기예요." },
+    { q: "What was Tin Man made from?", o: ["parts of a washing machine", "parts of a car", "old toys", "new metal bought at a shop"], a: 0, why: "'built it from parts of a washing machine'이라고 나와요." },
+    { q: "What does 'People are harder' mean?", o: ["People are heavier", "People are harder to understand and care for", "People work more slowly", "People break more easily"], a: 1, why: "기계는 고치면 되지만 사람은 마음을 이해하고 돌보는 게 더 어렵다는 뜻이에요." },
+    { q: "'Muttering' means ___.", o: ["speaking quietly to himself", "shouting at someone", "laughing loudly", "singing a song"], a: 0, why: "mutter는 '중얼거리다'라는 뜻이에요." }
+  ]
+},
+{
+  id: "s4-3", stage: 4, title: "The Time Capsule", bl: "AR 3.2",
+  text: "The class voted to bury a time capsule behind the gym and open it in twenty years. Everyone brought one small thing: a coin, a ticket, a letter. Min brought a note from her mother. It said, 'Always eat breakfast.' She was embarrassed, so she folded the paper six times and put it at the very bottom of the box. Twenty years later, most of them gathered again. The coin was green, and the ticket had turned brown. The note was still white. Min opened it and read it aloud, and no one laughed. Several of them wrote the sentence down.",
+  qs: [
+    { q: "What is this story mostly about?", o: ["A class time capsule holds a simple, lasting message", "A class loses its time capsule", "A girl forgets her lunch", "A school gym is rebuilt"], a: 0, why: "20년 뒤 열어 본 타임캡슐에서 작은 쪽지가 가장 큰 울림을 주는 이야기예요." },
+    { q: "Where was Min's note in the box?", o: ["at the very top", "at the very bottom", "outside the box", "in her pocket"], a: 1, why: "부끄러워서 여섯 번 접어 '맨 아래'에 넣었어요." },
+    { q: "Why did nobody laugh at the note?", o: ["It was too old to read", "It reminded them of something important", "It was written in another language", "They were too tired"], a: 1, why: "어른이 된 친구들에게 '아침 꼭 먹기'는 소중한 말로 다가왔어요." },
+    { q: "'Embarrassed' means ___.", o: ["uncomfortable in front of others", "very proud", "very sleepy", "angry"], a: 0, why: "embarrassed는 '부끄러운, 쑥스러운'이라는 뜻이에요." }
+  ]
+},
+{
+  id: "s4-4", stage: 4, title: "The Missing Painting", bl: "AR 3.1",
+  text: "The painting had hung in the hall for as long as any student could remember: a grey sea, a small boat, and a sky with no sun. On Monday, it was gone, and the wall had a pale square where it used to be. Weeks passed. Then a first grader told the principal she had seen it. She led the way to the art room, where the painting stood behind a crate of paper. The art teacher explained. She had borrowed it to show her students how to paint water, and so many of them wanted to look that she kept it one extra week. Nobody had remembered to tell the principal.",
+  qs: [
+    { q: "What is this story mostly about?", o: ["A missing painting turns out to be borrowed", "A painting is stolen by a student", "A school builds a new hall", "A teacher loses her keys"], a: 0, why: "사라진 그림이 사실 미술 선생님이 빌려 간 것이었다는 이야기예요." },
+    { q: "Where was the painting found?", o: ["in the principal's office", "in the art room", "in a student's bag", "in the gym"], a: 1, why: "'She led the way to the art room'이라고 나와요." },
+    { q: "Why was there a pale square on the wall?", o: ["The paint was new", "The painting had kept that part from the light", "Someone cleaned it", "The wall was broken"], a: 1, why: "그림이 가려져 있던 부분만 햇빛을 덜 받아 색이 옅게 남았어요." },
+    { q: "How long was the painting in the art room?", o: ["one day", "about a week longer than planned", "a year", "twenty years"], a: 1, why: "'kept it one extra week'라고 했어요." }
+  ]
+},
+{
+  id: "s4-5", stage: 4, title: "A Whale in the Harbor", bl: "AR 3.2",
+  text: "On Thursday morning, the harbor was quiet except for one sound that did not belong: a slow breath, then water, then a slow breath again. Fishermen lifted their heads. Ten meters out, a humpback whale moved in a circle, half as long as a boat. Boats waited. Nobody tried to push it out. The old men said whales sometimes come in to rest, and resting is something you cannot rush. By afternoon the whale was near the channel. Then it was gone. For a week, people spoke about it as if they had dreamed it together.",
+  qs: [
+    { q: "What is this story mostly about?", o: ["A whale visits the harbor and people leave it alone", "Fishermen catch a whale", "A boat sinks in the harbor", "A whale swims to an island"], a: 0, why: "항구에 들어온 고래를 재촉하지 않고 지켜봐 준 사람들의 이야기예요." },
+    { q: "When did the whale leave?", o: ["early morning", "by afternoon", "at midnight", "the next week"], a: 1, why: "'By afternoon the whale was near the channel. Then it was gone.'이라고 나와요." },
+    { q: "Why did nobody try to push the whale out?", o: ["The boats were broken", "They believed the whale needed to rest", "The whale was too small", "The police stopped them"], a: 1, why: "'resting is something you cannot rush'라는 말이 이유를 보여 줘요." },
+    { q: "'Resting is something you cannot rush' means ___.", o: ["rest takes its own time", "you should rest quickly", "rest is not important", "animals do not rest"], a: 0, why: "쉬는 일은 재촉한다고 빨라지지 않는다는 뜻이에요." }
+  ]
+},
+{
+  id: "s4-6", stage: 4, title: "The Contest", bl: "AR 3.3",
+  text: "Each year, the town held a contest for the best pie. Mrs. Okafor had won three times, and people said she would win again. On the morning of the contest, her neighbor's boy came by to borrow an egg. He looked nervous. He explained that his mother was sick and he wanted to bake something for her. Mrs. Okafor gave him four eggs, a bag of flour, and the afternoon she needed for her own pie. At four o'clock, the boy came in fourth, and Mrs. Okafor tied for third. She brought the ribbon home and set it on the kitchen table beside a card that said, 'Thank you for the flour.'",
+  qs: [
+    { q: "What is this story mostly about?", o: ["A woman gives up her advantage to help a neighbor", "A boy wins a baking contest", "A town has no flour", "A woman stops baking pies"], a: 0, why: "우승 후보였던 오카포 부인이 이웃 아이를 도우려고 자기 시간을 내준 이야기예요." },
+    { q: "How did Mrs. Okafor place in the contest?", o: ["first", "second", "third (tied)", "fourth"], a: 2, why: "'Mrs. Okafor tied for third.'라고 나와요." },
+    { q: "Why did she give the boy her afternoon?", o: ["She did not want to win again", "Helping him mattered more than winning", "She had already finished", "She forgot the contest"], a: 1, why: "자기 파이를 만들 시간을 내주었어요. 돕는 일이 더 중요했던 거죠." },
+    { q: "What does the card on the table show?", o: ["The boy was grateful", "The boy won the contest", "She bought the card", "The contest was cancelled"], a: 0, why: "'Thank you for the flour.'라는 카드는 아이의 고마운 마음이에요." }
+  ]
+},
+{
+  id: "s4-7", stage: 4, title: "The Old Bicycle", bl: "AR 3.0",
+  text: "In the corner of the garage stood a bicycle with a bent wheel and a bell that did not ring. My father said it was his when he was ten. I asked if I could fix it. He laughed, but he brought an old toolbox, and we worked every Saturday. The chain was rusted, so we soaked it in oil. The wheel would not turn, so we took it apart. In July, the bicycle stood outside in the sun with new tires. My father rode it slowly down the driveway, and for a moment he looked like a boy who had just learned to balance.",
+  qs: [
+    { q: "What is this story mostly about?", o: ["A girl and her father repair an old bicycle", "A father buys a new bicycle", "A bicycle is stolen", "A girl learns to ride"], a: 0, why: "아빠의 낡은 자전거를 함께 고치며 보내는 시간에 대한 이야기예요." },
+    { q: "What was wrong with the bicycle?", o: ["It had a bent wheel and a rusted chain", "It was too small", "It had no seat", "It was a different color"], a: 0, why: "'a bent wheel and a bell that did not ring', 'The chain was rusted'라고 나와요." },
+    { q: "Why does the father look like a boy?", o: ["He is very short", "Riding reminded him of his childhood", "He is wearing a costume", "He is playing a game"], a: 1, why: "10살 때 타던 자전거를 다시 타면서 어린 시절이 떠오른 거예요." },
+    { q: "'Rusted' means ___.", o: ["damaged by water and time", "new and shiny", "painted red", "very light"], a: 0, why: "rust는 녹이 슨 상태를 말해요." }
+  ]
+},
+{
+  id: "s4-8", stage: 4, title: "The Night Market", bl: "AR 3.3",
+  text: "At nine o'clock, the street changed. Lamps lit up under the paper awning, and sellers pulled tables into the road. The first time I went, I held my mother's hand and could not decide what to look at. A man was stretching sugar into a thin cloud. An old woman sold shoes from a crate. My mother bought nothing all evening, which surprised me. On the way home, she said, 'When I was young, this street was dark. Now look at it.' She was not talking about the lamps.",
+  qs: [
+    { q: "What is this story mostly about?", o: ["A child sees a night market and understands her mother's feelings", "A family buys new shoes", "A street has a power cut", "A mother sells candy"], a: 0, why: "야시장을 처음 본 아이가 엄마의 마음을 이해하게 되는 이야기예요." },
+    { q: "What did the mother buy?", o: ["shoes", "candy", "nothing", "a lamp"], a: 2, why: "'My mother bought nothing all evening'이라고 나와요." },
+    { q: "What was the mother really talking about?", o: ["How bright the lamps are", "How much the street has changed", "How expensive the shoes are", "How late it was"], a: 1, why: "'She was not talking about the lamps.' — 불빛이 아니라 동네가 변한 것, 그 자체를 말한 거예요." },
+    { q: "What does 'stretching sugar into a thin cloud' describe?", o: ["making a spun-sugar treat", "cleaning the street", "painting a sign", "cooking rice"], a: 0, why: "설탕을 늘려 얇은 구름처럼 만드는 것은 솜사탕 같은 간식이에요." }
+  ]
+}
+
+];
+</script>
+<script>
+/* =========================================================
+   앱 로직
+   ========================================================= */
+(function () {
+  'use strict';
+
+  var TTS_OK = ('speechSynthesis' in window) && (typeof window.SpeechSynthesisUtterance === 'function');
+
+  /* ---------- 상태 ---------- */
+  var DEFAULT_STATE = {
+    books: {},        // "s1-0": true
+    custom: [],       // {id, title, bl, stage}
+    missions: {},     // "m1": true
+    level: '0',
+    stageSel: 1,
+    quiz: {}          // "2026-11-16": {"s1-1": {c:2,t:3}}
+  };
+
+  var state = load();
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(APP_KEY);
+      if (!raw) return JSON.parse(JSON.stringify(DEFAULT_STATE));
+      var obj = JSON.parse(raw);
+      var s = JSON.parse(JSON.stringify(DEFAULT_STATE));
+      if (obj && typeof obj === 'object') {
+        if (obj.books && typeof obj.books === 'object') s.books = obj.books;
+        if (Array.isArray(obj.custom)) s.custom = obj.custom;
+        if (obj.missions && typeof obj.missions === 'object') s.missions = obj.missions;
+        if (typeof obj.level === 'string') s.level = obj.level;
+        if (obj.stageSel >= 1 && obj.stageSel <= 4) s.stageSel = obj.stageSel;
+        if (obj.quiz && typeof obj.quiz === 'object') s.quiz = obj.quiz;
+      }
+      return s;
+    } catch (e) {
+      return JSON.parse(JSON.stringify(DEFAULT_STATE));
+    }
+  }
+
+  var saveTimer = null;
+  function save() {
+    if (saveTimer) clearTimeout(saveTimer);
+    saveTimer = setTimeout(function () {
+      try { localStorage.setItem(APP_KEY, JSON.stringify(state)); } catch (e) {}
+    }, 60);
+  }
+
+  /* ---------- 유틸 ---------- */
+  function $(id) { return document.getElementById(id); }
+  function pad(n) { return n < 10 ? '0' + n : '' + n; }
+  function todayKey(d) {
+    d = d || new Date();
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  }
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  var toastTimer = null;
+  function toast(msg) {
+    var t = $('toast');
+    t.textContent = msg;
+    t.classList.add('on');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.classList.remove('on'); }, 2000);
+  }
+  function allBooks() {
+    var out = [];
+    STAGES.forEach(function (st) {
+      st.books.forEach(function (b, i) {
+        out.push({ id: 's' + st.n + '-' + i, stage: st.n, en: b.en, ko: b.ko, bl: b.bl, wc: b.wc, quiz: b.quiz, tip: b.tip, custom: false });
+      });
+    });
+    state.custom.forEach(function (c) {
+      out.push({ id: c.id, stage: c.stage, en: c.title, ko: '직접 추가', bl: c.bl || '-', wc: '', quiz: '', tip: '우리 집에 있는 책', custom: true });
+    });
+    return out;
+  }
+  function stageOfLevel(lv) {
+    if (!lv || lv === '0') return 1;
+    if ('GHI'.indexOf(lv) >= 0) return 1;
+    if ('JK'.indexOf(lv) >= 0) return 2;
+    if ('LM'.indexOf(lv) >= 0) return 3;
+    if ('NOP'.indexOf(lv) >= 0) return 4;
+    return 1;
+  }
+  function currentStage() { return stageOfLevel(state.level); }
+
+  /* ---------- 진행률 ---------- */
+  function progress() {
+    var books = allBooks();
+    var doneBooks = books.filter(function (b) { return state.books[b.id]; }).length;
+    var doneMissions = MISSIONS.filter(function (m) { return state.missions[m.id]; }).length;
+    var solvedSets = solvedSetIds().length;
+    var total = books.length + MISSIONS.length + QUIZ.length;
+    var done = doneBooks + doneMissions + solvedSets;
+    var pct = total ? Math.round(done / total * 100) : 0;
+    return { pct: pct, done: done, total: total, books: doneBooks, booksTotal: books.length, missions: doneMissions, missionsTotal: MISSIONS.length, sets: solvedSets, setsTotal: QUIZ.length };
+  }
+
+  function solvedSetIds() {
+    var ids = {};
+    Object.keys(state.quiz).forEach(function (d) {
+      Object.keys(state.quiz[d] || {}).forEach(function (id) { ids[id] = true; });
+    });
+    return Object.keys(ids);
+  }
+
+  function todayStats() {
+    var rec = state.quiz[todayKey()] || {};
+    var sets = 0, c = 0, t = 0;
+    Object.keys(rec).forEach(function (id) { sets++; c += rec[id].c || 0; t += rec[id].t || 0; });
+    return { sets: sets, correct: c, total: t };
+  }
+  function totalStats() {
+    var c = 0, t = 0, sets = 0;
+    Object.keys(state.quiz).forEach(function (d) {
+      Object.keys(state.quiz[d] || {}).forEach(function (id) {
+        sets++; c += state.quiz[d][id].c || 0; t += state.quiz[d][id].t || 0;
+      });
+    });
+    return { correct: c, total: t, sets: sets, acc: t ? Math.round(c / t * 100) : 0 };
+  }
+  function streak() {
+    var n = 0;
+    var d = new Date();
+    // 오늘 아직 안 풀었으면 어제부터 세기
+    var recToday = state.quiz[todayKey(d)] || {};
+    if (Object.keys(recToday).length === 0) d.setDate(d.getDate() - 1);
+    for (var i = 0; i < 400; i++) {
+      var k = todayKey(d);
+      var rec = state.quiz[k] || {};
+      if (Object.keys(rec).length > 0) { n++; d.setDate(d.getDate() - 1); }
+      else break;
+    }
+    return n;
+  }
+
+  /* ---------- 네비게이션 ---------- */
+  var VIEWS = ['home', 'roadmap', 'routine', 'books', 'quiz'];
+  function go(name) {
+    if (VIEWS.indexOf(name) < 0) return;
+    VIEWS.forEach(function (v) {
+      var el = $('view-' + v);
+      if (el) el.classList.toggle('active', v === name);
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('#nav button'), function (b) {
+      b.classList.toggle('on', b.getAttribute('data-go') === name);
+    });
+    if (name !== 'quiz') closeQuiz();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-go]');
+    if (t) { go(t.getAttribute('data-go')); }
+  });
+
+  /* ---------- 홈 ---------- */
+  function renderHome() {
+    var p = progress();
+    $('progPct').textContent = p.pct + '%';
+    $('progBar').style.width = p.pct + '%';
+    $('progSub').textContent = '책 ' + p.books + '/' + p.booksTotal + ' · 미션 ' + p.missions + '/' + p.missionsTotal + ' · 문제 ' + p.sets + '/' + p.setsTotal;
+
+    var cs = currentStage();
+    var dots = STAGES.map(function (st) {
+      var cls = 'dot';
+      if (st.n < cs) cls += ' on';
+      if (st.n === cs) cls += ' now';
+      return '<div class="' + cls + '">' + st.n + '단계<br>' + st.ar.split(' ')[0] + '</div>';
+    }).join('');
+    $('stageDots').innerHTML = dots;
+
+    var st = STAGES[cs - 1];
+    $('homeNow').textContent = 'AR ' + st.ar + ' · 라즈키즈 ' + st.rz;
+    $('homeStage').textContent = cs + '단계 · ' + st.name + ' (' + st.weeks + ')';
+    var booksWeek = cs === 1 ? '라즈키즈 10권 + 실물책 4권' : cs === 2 ? '라즈키즈 10권 + 실물책 4~5권' : cs === 3 ? '라즈키즈 8권 + 챕터북 3~4권' : '라즈키즈 6권 + 챕터북 2~3권';
+    $('homeGoal').textContent = booksWeek;
+
+    var ts = todayStats();
+    $('quickQuizSub').textContent = ts.sets > 0 ? '오늘 ' + ts.sets + '세트 완료!' : '1세트 풀러 가기';
+    $('quickBookSub').textContent = '읽은 책 ' + p.books + '권 체크됨';
+    $('streakChip').textContent = '🔥 ' + streak() + '일';
+  }
+
+  /* ---------- 로드맵 ---------- */
+  function renderRoadmap() {
+    var html = STAGES.map(function (st) {
+      var rows = st.rows.map(function (r) {
+        return '<div class="kv"><span class="k">' + esc(r[0]) + '</span><span class="v">' + r[1] + '</span></div>';
+      }).join('');
+      return '<div class="stage s' + st.n + '">' +
+        '<div class="stage-head">' +
+          '<div class="stage-badge">' + st.n + '</div>' +
+          '<div class="stage-meta"><h3>' + esc(st.name) + '</h3><p>' + esc(st.weeks) + ' · 라즈키즈 ' + esc(st.rz) + '</p></div>' +
+          '<div class="stage-lv">AR ' + esc(st.ar) + '</div>' +
+        '</div>' +
+        '<div class="stage-body">' +
+          '<div class="goal">' + st.goal + '</div>' + rows +
+        '</div></div>';
+    }).join('');
+    $('stageCards').innerHTML = html;
+
+    var cs = currentStage();
+    $('rzTable').innerHTML = RZ_TABLE.map(function (r) {
+      var isCur = r[4] && Number(r[4]) === cs;
+      return '<tr class="' + (isCur ? 'cur' : '') + '">' +
+        '<td class="rz">' + esc(r[0]) + '</td>' +
+        '<td class="ar">' + esc(r[1]) + '</td>' +
+        '<td>' + esc(r[2]) + '</td>' +
+        '<td>' + esc(r[3]) + (isCur ? ' <b>◀ 지금</b>' : '') + '</td></tr>';
+    }).join('');
+
+    $('weekTable').innerHTML = WEEKS.map(function (w) {
+      return '<tr><td><b>' + esc(w[0]) + '</b></td><td class="rz">' + esc(w[1]) + '</td><td>' + esc(w[2]) + '</td><td>' + esc(w[3]) + '</td></tr>';
+    }).join('');
+  }
+
+  /* ---------- 루틴/코칭 ---------- */
+  function renderCoach() {
+    $('coachList').innerHTML = COACH.map(function (c, i) {
+      var list = c.list.map(function (li) { return '<li>' + li + '</li>'; }).join('');
+      return '<div class="acc" data-acc="' + i + '">' +
+        '<button class="acc-h" type="button"><span class="ai">' + c.icon + '</span><span class="at">' + esc(c.t) + '</span><span class="ac">▾</span></button>' +
+        '<div class="acc-b"><p>' + c.body + '</p><ul style="margin-top:8px;">' + list + '</ul></div>' +
+      '</div>';
+    }).join('');
+    Array.prototype.forEach.call(document.querySelectorAll('.acc-h'), function (b) {
+      b.addEventListener('click', function () {
+        b.parentNode.classList.toggle('open');
+      });
+    });
+  }
+
+  /* ---------- 책장 ---------- */
+  function renderBooks() {
+    var books = allBooks();
+    var html = '';
+    STAGES.forEach(function (st) {
+      var mine = books.filter(function (b) { return b.stage === st.n; });
+      var done = mine.filter(function (b) { return state.books[b.id]; }).length;
+      var pct = mine.length ? Math.round(done / mine.length * 100) : 0;
+      html += '<div class="stagehead-row"><h3>' + st.n + '단계 · ' + esc(st.weeks) + '</h3>' +
+        '<div class="bar-mini"><i style="width:' + pct + '%"></i></div>' +
+        '<span class="cnt">' + done + '/' + mine.length + '</span></div>';
+      html += mine.map(function (b) {
+        var on = !!state.books[b.id];
+        var meta = '<span class="bl">AR ' + esc(b.bl) + '</span>';
+        if (b.wc) meta += '<span class="bl wc">' + esc(b.wc) + '단어</span>';
+        if (b.quiz) meta += '<span class="bl ar">AR퀴즈 ' + esc(b.quiz) + '</span>';
+        return '<div class="book s' + b.stage + (on ? ' done' : '') + '" data-book="' + b.id + '">' +
+          '<div class="chk">' + (on ? '✓' : '') + '</div>' +
+          '<div class="book-b">' +
+            '<div class="book-t"><span class="en">' + esc(b.en) + '</span><span class="ko">' + esc(b.ko) + '</span></div>' +
+            '<div class="book-meta">' + meta + '</div>' +
+            '<div class="book-tip">' + esc(b.tip) + '</div>' +
+          '</div>' +
+          (b.custom ? '<button class="book-x" type="button" data-del="' + b.id + '" aria-label="삭제">✕</button>' : '') +
+        '</div>';
+      }).join('');
+    });
+    $('bookStages').innerHTML = html;
+
+    $('missionList').innerHTML = MISSIONS.map(function (m) {
+      var on = !!state.missions[m.id];
+      return '<div class="mission' + (on ? ' done' : '') + '" data-mission="' + m.id + '">' +
+        '<div class="chk">' + (on ? '✓' : '') + '</div>' +
+        '<div class="mt">' + esc(m.t) + '</div><div class="wk">' + esc(m.wk) + '</div></div>';
+    }).join('');
+  }
+
+  /* 책/미션 체크 이벤트 (위임) */
+  document.addEventListener('click', function (e) {
+    var book = e.target.closest('[data-book]');
+    if (book && !e.target.closest('[data-del]')) {
+      var id = book.getAttribute('data-book');
+      if (state.books[id]) delete state.books[id]; else state.books[id] = true;
+      save(); renderBooks(); renderHome(); updateQuizStats();
+      return;
+    }
+    var del = e.target.closest('[data-del]');
+    if (del) {
+      var did = del.getAttribute('data-del');
+      state.custom = state.custom.filter(function (c) { return c.id !== did; });
+      delete state.books[did];
+      save(); renderBooks(); renderHome(); updateQuizStats();
+      toast('삭제했어요');
+      return;
+    }
+    var mi = e.target.closest('[data-mission]');
+    if (mi) {
+      var mid = mi.getAttribute('data-mission');
+      if (state.missions[mid]) delete state.missions[mid]; else state.missions[mid] = true;
+      save(); renderBooks(); renderHome();
+      return;
+    }
+  });
+
+  /* 책 추가 */
+  function initAddBook() {
+    $('addBookToggle').addEventListener('click', function () {
+      $('addBookBox').classList.toggle('on');
+    });
+    $('addBookSave').addEventListener('click', function () {
+      var title = ($('nbTitle').value || '').trim();
+      if (!title) { toast('책 제목을 적어 주세요'); return; }
+      var bl = ($('nbBL').value || '').trim() || '-';
+      var stage = Number($('nbStage').value) || 1;
+      state.custom.push({ id: 'c' + Date.now(), title: title, bl: bl, stage: stage });
+      save();
+      $('nbTitle').value = ''; $('nbBL').value = '';
+      $('addBookBox').classList.remove('on');
+      renderBooks(); renderHome(); updateQuizStats();
+      toast('책장에 넣었어요');
+    });
+    $('exportBtn').addEventListener('click', function () {
+      var p = progress();
+      var t = totalStats();
+      var lines = ['📚 유니 AR 3.0 · 15주 진행 상황',
+        '진행률 ' + p.pct + '% (책 ' + p.books + '/' + p.booksTotal + ', 미션 ' + p.missions + '/' + p.missionsTotal + ', 문제 ' + p.sets + '/' + p.setsTotal + ')',
+        '정답률 ' + (t.total ? t.acc + '%' : '-') + ' · 연속 ' + streak() + '일'];
+      var txt = lines.join('\n');
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(function () { toast('복사했어요'); }, function () { toast(txt); });
+      } else { toast(txt); }
+    });
+  }
+
+  /* ---------- 문제: 목록 ---------- */
+  function renderStageSel() {
+    $('stageSel').innerHTML = STAGES.map(function (st) {
+      return '<button class="sbtn' + (state.stageSel === st.n ? ' on' : '') + '" type="button" data-stage="' + st.n + '">' +
+        '<b>' + st.n + '단계</b>AR ' + st.ar.replace(/ ~ /g, '·') + '<br>' + st.rz + '</button>';
+    }).join('');
+  }
+  document.addEventListener('click', function (e) {
+    var sb = e.target.closest('[data-stage]');
+    if (sb) {
+      state.stageSel = Number(sb.getAttribute('data-stage'));
+      save(); renderStageSel(); renderSetList();
+    }
+  });
+
+  function renderSetList() {
+    var st = state.stageSel;
+    var solved = {};
+    solvedSetIds().forEach(function (id) { solved[id] = true; });
+    var sets = QUIZ.filter(function (q) { return q.stage === st; });
+    var stage = STAGES[st - 1];
+    $('setListTitle').textContent = st + '단계 문제 모음';
+    $('setListSub').textContent = 'AR ' + stage.ar + ' · 라즈키즈 ' + stage.rz + ' · ' + sets.length + '세트';
+    var daily = pickDailySet();
+    var sbtn = $('startDaily');
+    if (sbtn && daily) sbtn.textContent = '오늘의 1세트 · ' + daily.title + ' ▶';
+    $('setList').innerHTML = sets.map(function (s, i) {
+      var done = solved[s.id];
+      return '<button class="setitem' + (done ? ' solved' : '') + '" type="button" data-set="' + s.id + '">' +
+        '<span class="si-e">' + (done ? '✅' : '📄') + '</span>' +
+        '<span class="si-t">' + (i + 1) + '. ' + esc(s.title) + '</span>' +
+        '<span class="si-s">' + esc(s.bl) + ' · ' + s.qs.length + '문항</span></button>';
+    }).join('');
+  }
+
+  /* ---------- 문제: 풀기 ---------- */
+  var play = null;
+
+  function pickDailySet() {
+    var st = state.stageSel;
+    var sets = QUIZ.filter(function (q) { return q.stage === st; });
+    if (!sets.length) return null;
+    var rec = state.quiz[todayKey()] || {};
+    for (var i = 0; i < sets.length; i++) {
+      if (!rec[sets[i].id]) return sets[i];
+    }
+    // 오늘 다 풀었으면 가장 적게 푼 세트
+    var d = new Date();
+    var idx = (d.getFullYear() * 372 + (d.getMonth() + 1) * 31 + d.getDate()) % sets.length;
+    return sets[idx];
+  }
+
+  function startSet(id) {
+    var set = null;
+    QUIZ.forEach(function (q) { if (q.id === id) set = q; });
+    if (!set) return;
+    play = { set: set, i: 0, answered: false, correct: 0, total: set.qs.length };
+    $('quizHome').style.display = 'none';
+    $('quizPlay').style.display = 'block';
+    renderQuestion();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function closeQuiz() {
+    play = null;
+    var home = $('quizHome'), p = $('quizPlay');
+    if (home) home.style.display = '';
+    if (p) { p.style.display = 'none'; p.innerHTML = ''; }
+  }
+
+  function speakBtn(text) {
+    if (!TTS_OK) return '';
+    return '<button class="speak" type="button" data-say="' + esc(text) + '">🔊 읽어주기</button>';
+  }
+
+  function renderQuestion() {
+    if (!play) return;
+    var s = play.set, q = s.qs[play.i];
+    var opts = q.o.map(function (o, idx) {
+      return '<button class="opt" type="button" data-opt="' + idx + '"><span class="on">' + 'ABCD'.charAt(idx) + '</span><span>' + esc(o) + '</span></button>';
+    }).join('');
+
+    var html = '' +
+      '<div class="quiz-top" style="display:flex;align-items:center;gap:8px;">' +
+        '<button class="btn ghost sm" type="button" id="backToList" style="flex:0 0 auto;">← 목록</button>' +
+        '<div style="flex:1;"><div style="font-size:11.5px;font-weight:800;color:var(--pink-d);">' + s.stage + '단계 · ' + esc(s.bl) + '</div>' +
+        '<div style="font-size:13.5px;font-weight:900;">' + (play.i + 1) + ' / ' + s.qs.length + ' 문제</div></div>' +
+        '<div style="font-size:12px;font-weight:900;color:var(--mint-d);">⭐ ' + play.correct + '</div>' +
+      '</div>' +
+
+      '<div class="passage">' +
+        '<div class="ptitle"><h3>' + esc(s.title) + '</h3><span class="lvl">' + esc(s.bl) + '</span></div>' +
+        '<div class="en-text">' + esc(s.text) + '</div>' +
+        speakBtn(s.text) +
+      '</div>' +
+
+      '<div class="passage">' +
+        '<div class="qhead"><span class="qi">Q' + (play.i + 1) + '</span></div>' +
+        '<div class="qq">' + esc(q.q) + '</div>' +
+        '<div class="opts" id="opts">' + opts + '</div>' +
+        '<div class="fb" id="fb"></div>' +
+        '<div class="quiznav" id="qnav"></div>' +
+        '<div style="margin-top:9px;">' + speakBtn(q.q) + '</div>' +
+      '</div>';
+
+    $('quizPlay').innerHTML = html;
+    $('backToList').addEventListener('click', function () { closeQuiz(); renderSetList(); });
+
+    Array.prototype.forEach.call(document.querySelectorAll('#opts .opt'), function (b) {
+      b.addEventListener('click', function () {
+        if (play.answered) return;
+        answer(Number(b.getAttribute('data-opt')));
+      });
+    });
+    wireSpeak();
+  }
+
+  function answer(pick) {
+    var s = play.set, q = s.qs[play.i];
+    if (play.answered) return;
+    play.answered = true;
+    var right = pick === q.a;
+    if (right) play.correct++;
+
+    var opts = document.querySelectorAll('#opts .opt');
+    Array.prototype.forEach.call(opts, function (b, idx) {
+      b.setAttribute('disabled', 'disabled');
+      if (idx === q.a) b.classList.add('right');
+      else if (idx === pick) b.classList.add('wrong');
+    });
+
+    var fb = $('fb');
+    fb.className = 'fb show ' + (right ? 'ok' : 'no');
+    fb.innerHTML = '<div class="ft">' + (right ? '🎉 정답이에요!' : '🤔 아쉬워요! 정답은 ' + 'ABCD'.charAt(q.a) + '번이에요') + '</div>' +
+      '<div class="why">' + esc(q.why) + '</div>';
+
+    var last = play.i === s.qs.length - 1;
+    $('qnav').innerHTML = '<button class="btn ' + (last ? 'mint' : '') + ' full" type="button" id="nextQ">' + (last ? '결과 보기 🏁' : '다음 문제 →') + '</button>';
+    $('nextQ').addEventListener('click', function () {
+      if (last) { finishSet(); }
+      else { play.i++; play.answered = false; renderQuestion(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    });
+  }
+
+  function finishSet() {
+    var s = play.set, c = play.correct, t = play.total;
+    var key = todayKey();
+    if (!state.quiz[key]) state.quiz[key] = {};
+    var prev = state.quiz[key][s.id];
+    if (!prev || c >= prev.c) state.quiz[key][s.id] = { c: c, t: t };
+    save();
+
+    var pct = Math.round(c / t * 100);
+    var emo = pct === 100 ? '🏆' : pct >= 80 ? '🌟' : pct >= 60 ? '💪' : '🌱';
+    var msg = pct === 100 ? '완벽해요! 유니 최고!' : pct >= 80 ? '아주 잘했어요! 이 레벨은 편해요.' : pct >= 60 ? '조금 더 읽어보면 금방 늘어요.' : '괜찮아요, 오늘은 같이 다시 읽어봐요.';
+
+    $('quizPlay').innerHTML =
+      '<div class="done-card">' +
+        '<div class="done-emo">' + emo + '</div>' +
+        '<h3>' + s.title + '</h3>' +
+        '<p>' + msg + '</p>' +
+        '<div class="done-score">' +
+          '<div><b>' + c + '/' + t + '</b>정답</div>' +
+          '<div><b>' + pct + '%</b>정확도</div>' +
+          '<div><b>⭐ ' + c + '</b>별</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="card"><div class="sec-title"><span class="em">📌</span> 엄마에게</div>' +
+        '<p class="small">' + (pct >= 85 ? '정확도 85% 이상이면 지금 레벨이 딱 맞아요. 다음 세트로 넘어가도 좋아요.' : pct >= 75 ? '조금만 더! 같은 단계에서 2~3세트 더 풀어보고 올려주세요.' : '오늘은 이 세트를 한 번 더 읽고 다시 풀어보세요. 레벨을 낮추는 것도 좋은 선택이에요.') + '</p>' +
+        '<hr class="hr">' +
+        '<div class="row"><button class="btn ghost full" type="button" id="toList">목록으로</button><button class="btn full" type="button" id="again">한 세트 더</button></div>' +
+      '</div>';
+
+    $('toList').addEventListener('click', function () { closeQuiz(); renderSetList(); });
+    $('again').addEventListener('click', function () {
+      var next = pickDailySet();
+      closeQuiz();
+      if (next) startSet(next.id);
+    });
+
+    renderHome(); updateQuizStats(); renderSetList();
+    if (c > 0) toast('⭐ 별 ' + c + '개 획득!');
+    else toast('오늘도 책을 읽었어요 👏');
+  }
+
+  function updateQuizStats() {
+    var ts = todayStats();
+    var tot = totalStats();
+    $('stToday').textContent = ts.sets;
+    $('stStreak').textContent = streak();
+    $('stStars').textContent = tot.correct;
+    $('stAcc').textContent = tot.total ? tot.acc + '%' : '-';
+    var chip = $('streakChip');
+    if (chip) chip.textContent = '🔥 ' + streak() + '일';
+  }
+
+  /* 문제 세트 클릭 */
+  document.addEventListener('click', function (e) {
+    var si = e.target.closest('[data-set]');
+    if (si) { startSet(si.getAttribute('data-set')); return; }
+    var sb = e.target.closest('#startDaily');
+    if (sb) {
+      var set = pickDailySet();
+      if (set) startSet(set.id);
+      return;
+    }
+  });
+
+  /* ---------- 읽어주기 ---------- */
+  function wireSpeak() {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-say]'), function (b) {
+      b.addEventListener('click', function () {
+        if (!TTS_OK) { toast('이 기기에서는 읽어주기를 쓸 수 없어요'); return; }
+        try {
+          window.speechSynthesis.cancel();
+          var u = new SpeechSynthesisUtterance(b.getAttribute('data-say'));
+          u.lang = 'en-US';
+          u.rate = 0.88;
+          u.pitch = 1.05;
+          var voices = window.speechSynthesis.getVoices() || [];
+          for (var i = 0; i < voices.length; i++) {
+            if (/en[-_]US/i.test(voices[i].lang)) { u.voice = voices[i]; break; }
+          }
+          window.speechSynthesis.speak(u);
+          toast('읽어주는 중… 🔊');
+        } catch (err) {
+          toast('읽어주기를 시작할 수 없어요');
+        }
+      });
+    });
+  }
+
+  /* ---------- 레벨 선택 ---------- */
+  function initLevel() {
+    var sel = $('levelSelect');
+    if (!sel) return;
+    sel.value = state.level;
+    sel.addEventListener('change', function () {
+      state.level = sel.value;
+      var st = currentStage();
+      state.stageSel = st;
+      save();
+      renderHome(); renderRoadmap(); renderStageSel(); renderSetList(); updateQuizStats();
+      toast(st + '단계로 맞췄어요');
+    });
+  }
+
+  /* ---------- 시작 ---------- */
+  function init() {
+    renderHome();
+    renderRoadmap();
+    renderCoach();
+    renderBooks();
+    initAddBook();
+    renderStageSel();
+    renderSetList();
+    updateQuizStats();
+    initLevel();
+
+    var hs = $('homeStart');
+    if (hs) {
+      hs.addEventListener('click', function () {
+        state.stageSel = currentStage();
+        save(); renderStageSel(); renderSetList();
+        go('quiz');
+        var s = pickDailySet();
+        if (s) startSet(s.id);
+      });
+    }
+    if (TTS_OK) {
+      try { window.speechSynthesis.getVoices(); } catch (e) {}
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+</body>
+</html>
